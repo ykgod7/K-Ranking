@@ -1,0 +1,21 @@
+@mixin centerElement {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin engTitleFont {
+    font-family: 'Bebas Neue', serif;
+}
+
+@mixin engContentFont {
+    font-family: 'Do Hyeon', sans-serif;
+    color: #a6a6a6;
+}
+
+@mixin korContentFont {
+    // font-family: 'Nanum Gothic', sans-serif;
+    // font-family: 'Nanum Gothic Coding', monospace;
+    font-family: 'Noto Sans KR', sans-serif;
+    // font-family: 'Noto Serif KR', serif; 
+}
