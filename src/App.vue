@@ -1,17 +1,15 @@
 <template>
+    <Navbar />
 
-<Navbar />
+    <div class="container">
+        <router-view v-slot="{ Component }">
+            <keep-alive>
+                <component :is="Component" :key="$route.fullPath"></component>
+            </keep-alive>
+        </router-view>
+    </div>
 
-<div class="container">
-    <router-view v-slot="{ Component }">
-        <keep-alive>
-            <component :is="Component" :key="$route.fullPath"></component>
-        </keep-alive>
-    </router-view>
-</div>
-
-<Footer />
-
+    <Footer />
 </template>
 
 
@@ -31,5 +29,6 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
+    overflow: hidden;
 }
 </style>
