@@ -14,9 +14,11 @@
         "bootstrap-icons": "^1.9.1",
         "chart.js": "^3.8.2",
         "core-js": "^3.8.3",
+        "material-icons": "^1.13.3",
         "vue": "^3.2.13",
         "vue-chart-3": "^3.1.8",
         "vue-inline-svg": "^3.1.2",
+        "vue-material-design-icons": "^5.2.0",
         "vue-router": "^4.0.14"
     },
     "devDependencies": {

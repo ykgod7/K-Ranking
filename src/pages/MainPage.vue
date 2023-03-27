@@ -5,7 +5,6 @@
     <div class="website-title">
         <div class="title-content">
             <p class="title">Top University Ranking</p>
-            <!-- <p class="title-description">본 웹사이트는 QS World University Rankings (QS)와 Times Higher Education (THE)에 나와 있는 자료를 기반으로 제작되었습니다</p> -->
         </div>
     </div>
 
