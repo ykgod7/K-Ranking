@@ -89,13 +89,12 @@ $material-icons-font-path: '~material-icons/iconfont/';
 
     .navbar-wrapper {
         height: 100%;
-        width: max(1024px, 70%);
+        width: 1024px;
 
         .row-1 {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 70px;
 
             .logo {
                 display: flex;
@@ -118,6 +117,9 @@ $material-icons-font-path: '~material-icons/iconfont/';
         }
 
         .row-2 {
+            position: absolute;
+            width: 1024px;
+            bottom: 40px;
             display: flex;
             justify-content: space-between;
 
