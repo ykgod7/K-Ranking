@@ -15,6 +15,7 @@
         "chart.js": "^3.8.2",
         "core-js": "^3.8.3",
         "material-icons": "^1.13.3",
+        "node-polyfill-webpack-plugin": "^2.0.1",
         "vue": "^3.2.13",
         "vue-chart-3": "^3.1.8",
         "vue-inline-svg": "^3.1.2",

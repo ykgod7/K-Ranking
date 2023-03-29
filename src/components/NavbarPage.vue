@@ -19,32 +19,32 @@
             <div class="row-2">
                 <div class="year-filter">
                     <div class="filter-name">년도</div>
-                    <div class="year-dropdown">
+                    <div class="year-dropdown" @click="yearDropdown = !yearDropdown">
                         <!-- 년도 데이터  -->
                         <div class="current">
                             <p>2023</p>
                         </div>
-                        <div class="dropdown-content">
+                        <div class="dropdown-content" v-if="yearDropdown">
                             <!-- 반복문으로 연도 넣기 -->
-                            <div class="option">dwws</div>
-                            <div class="option">qweqw</div>
-                            <div class="option">qweqwe</div>
+                            <div class="option" @click="getSelectedYearData(year)">2022</div>
+                            <div class="option">2021</div>
+                            <div class="option">2020</div>
                         </div>
                         <span class="material-icons-round icon">arrow_drop_down</span>
 
                     </div>
                 </div>
                 <div class="subject-filter">
-                    <div class="filter-name">학부명</div>
-                    <div class="subject-dropdown">
+                    <div class="filter-name">학부/학과명</div>
+                    <div class="subject-dropdown" @click="subjectDropdown = !subjectDropdown">
                         <div class="current">
                             <p>전체</p>
                         </div>
-                        <div class="dropdown-content">
-                            <div class="option">asdasd</div>
-                            <div class="option">asdasdas</div>
-                            <div class="option">asdasd</div>
-                            <div class="option">asdasd</div>
+                        <div class="dropdown-content" v-if="subjectDropdown">
+                            <div class="option">간호학과</div>
+                            <div class="option">경제학과</div>
+                            <div class="option">기계공학과</div>
+                            <div class="option">법학과</div>
                         </div>
                         <span class="material-icons-round icon">arrow_drop_down</span>
                     </div>
@@ -63,12 +63,25 @@
 </template>
 
 <script>
-
+import { ref } from 'vue'
 
 export default {
     components: {
     },
     setup() {
+        const yearDropdown = ref(false)
+        const subjectDropdown = ref(0)
+
+        const getSelectedYearData = (year) => {
+            console.log('clicked')
+        }
+
+
+        return {
+            subjectDropdown,
+            yearDropdown,
+            getSelectedYearData
+        }
     },
 }
 </script>
@@ -78,7 +91,6 @@ $material-icons-font-path: '~material-icons/iconfont/';
 @import '~material-icons/iconfont/material-icons.scss';
 
 .navbar {
-    @include engTitleFont();
     @include centerElement();
     z-index: 10;
     height: 254px;
@@ -104,6 +116,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
                 }
 
                 .k-ranking {
+                    font-family: 'pretendard';
                     @include centerElement();
                     height: 100%;
 
@@ -111,6 +124,14 @@ $material-icons-font-path: '~material-icons/iconfont/';
                         color: $mainColor;
                         font-weight: bold;
                         font-size: 2.5rem
+                    }
+                }
+            }
+
+            .navbar-links {
+                .links-wrapper {
+                    a {
+                        font-family: 'pretendard';
                     }
                 }
             }
@@ -122,6 +143,10 @@ $material-icons-font-path: '~material-icons/iconfont/';
             bottom: 40px;
             display: flex;
             justify-content: space-between;
+
+            .show {
+                display: block;
+            }
 
             .filter-name {
                 color: #222222;
@@ -151,6 +176,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
                         height: 100%;
 
                         p {
+                            font-family: 'pretendard';
                             padding-left: 10px;
                             font-size: 16px;
                             color: #222222;
@@ -165,9 +191,12 @@ $material-icons-font-path: '~material-icons/iconfont/';
                         width: 221px;
                         border: 1px solid #F2F2F2;
                         border-radius: 0 0 4px 4px;
-                        // display: none;
 
                         .option {
+                            font-family: 'pretendard';
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 19px;
                             background: white;
                             padding: 0 10px;
                             display: flex;
@@ -215,6 +244,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
                         height: 100%;
 
                         p {
+                            font-family: 'pretendard';
                             padding-left: 10px;
                             font-size: 16px;
                             color: #222222;
@@ -232,6 +262,10 @@ $material-icons-font-path: '~material-icons/iconfont/';
                         // display: none;
 
                         .option {
+                            font-family: 'pretendard';
+                            font-weight: 700;
+                            font-size: 16px;
+                            line-height: 19px;
                             background: white;
                             padding: 0 10px;
                             display: flex;
@@ -276,6 +310,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
                         border-radius: 4px;
 
                         &::placeholder {
+                            font-family: 'pretendard';
                             color: #bababa;
                             font-size: 16px;
                             font-weight: 700;

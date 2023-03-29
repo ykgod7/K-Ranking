@@ -1,90 +1,84 @@
 <template>
-<div v-if="loading"></div>
-<div v-else>
-    <!-- 타이틀 & 로고 -->
-    <div class="website-title">
-        <div class="title-content">
-            <p class="title">Top University Ranking</p>
-        </div>
-    </div>
-
+  <div v-if="loading"></div>
+  <div class="container" v-else>
     <!-- Filters -->
     <main class="main">
-        <div class="filter-wrapper">
-            <!-- Source Selector -->
-            <div class="source-filter">
-                <div class="source" :class="theActive ? 'active' : null" @click="selectedSource = 'THE', selectedSubject = null, theActive = true, qsActive = false">
-                    <div class="source_img"><img :src="sourceSvg" /></div>
-                    <span>THE</span>
-                </div>
+      <div class="filter-wrapper">
+        <!-- Source Selector -->
+        <div class="source-filter">
+          <div class="source" :class="theActive ? 'active' : null"
+            @click="selectedSource = 'THE', selectedSubject = null, theActive = true, qsActive = false">
+            <div class="source_img"><img :src="sourceSvg" /></div>
+            <span>THE</span>
+          </div>
 
-                <div class="source" :class="qsActive ? 'active' : null" @click="selectedSource = 'QS', selectedSubject = null, qsActive = true, theActive = false">
-                    <div class="source_img"><img :src="sourceSvg" /></div>
-                    <span>QS</span>
-                </div>
-            </div>
-
-            <!-- Year Filter -->
-            <div class="year-filter">
-                <select 
-                    v-model="selectedYear" @change="selectedYear = selectedYear">
-                    <option :key="i" v-for="(val, i) in years" :value="val">{{ val }}</option>
-                </select>
-                <div class="year-arrow"><img :src="arrowDown" /></div>
-            </div>
-
-            <!-- Name Filter -->
-            <div class="search-filter">
-                <input 
-                onkeydown="return (event.keyCode!=13);"
-                type="search" 
-                placeholder="학교명 검색" 
-                aria-describedby="button-addon3" 
-                v-model="searchUniversity">
-                <div class="search-icon"><img :src="search" /></div>
-            </div>
-
-            <!-- Subject Filter -->
-            <div class="subject-filter">
-                <select v-model="selectedSubject" @change="selectedSubject = selectedSubject">
-                    <option :value="null">학과</option>
-                    <!-- eslint-disable-next-line -->
-                    <option v-if="selectedSource === 'QS'" v-for="(subject, i) in filteredUniversity[0].qs_subjects" :key="i" :value="subject">{{ subject }}</option>
-                    <option v-else v-for="(subject, j) in filteredUniversity[0].the_subjects" :key="j" :value="subject">{{ subject }}</option>
-                </select>
-                <div class="subject-arrow"><img :src="arrowDown" /></div>
-            </div>
+          <div class="source" :class="qsActive ? 'active' : null"
+            @click="selectedSource = 'QS', selectedSubject = null, qsActive = true, theActive = false">
+            <div class="source_img"><img :src="sourceSvg" /></div>
+            <span>QS</span>
+          </div>
         </div>
-        
 
-        <!-- 대학교 리스트 -->
-        <div class="title-bar-wrapper">
-            <div class="title-bar-content">
-                <div class="title-bar-left">순위</div>
-                <div class="title-bar-left"></div>
-                <div class="title-bar-left">대학교명</div>
-            </div>
-            <div class="title-bar-content"><p>경쟁률</p></div>
+        <!-- Year Filter -->
+        <div class="year-filter">
+          <select v-model="selectedYear" @change="selectedYear = selectedYear">
+            <option :key="i" v-for="(val, i) in years" :value="val">{{ val }}</option>
+          </select>
+          <div class="year-arrow"><img :src="arrowDown" /></div>
         </div>
-        <div class="university-wrapper" v-for="(university, idx) in filteredUniversity" :key="idx" @click="detailPage(university)">
-            <div class="university-content">
-                <p>{{ idx + 1 }}</p>
-                <div class="university-logo">
-                    <img :src="require(`../assets/logo/${university.name}.png`)" />
-                </div>
-                <div class="university-name">
-                    <p>{{ university.name }}</p>
-                    <p>{{ university.engName }}</p>
-                </div>
-            </div>
-            <div class="university-content">
-                <p>{{ university.compRate }}</p>
-            </div>
+
+        <!-- Name Filter -->
+        <div class="search-filter">
+          <input onkeydown="return (event.keyCode!=13);" type="search" placeholder="학교명 검색"
+            aria-describedby="button-addon3" v-model="searchUniversity">
+          <div class="search-icon"><img :src="search" /></div>
         </div>
+
+        <!-- Subject Filter -->
+        <div class="subject-filter">
+          <select v-model="selectedSubject" @change="selectedSubject = selectedSubject">
+            <option :value="null">학과</option>
+            <!-- eslint-disable-next-line -->
+            <option v-if="selectedSource === 'QS'" v-for="(subject, i) in filteredUniversity[0].qs_subjects" :key="i"
+              :value="subject">{{ subject }}</option>
+            <option v-else v-for="(subject, j) in filteredUniversity[0].the_subjects" :key="j" :value="subject">{{ subject
+            }}</option>
+          </select>
+          <div class="subject-arrow"><img :src="arrowDown" /></div>
+        </div>
+      </div>
+
+
+      <!-- 대학교 리스트 -->
+      <div class="title-bar-wrapper">
+        <div class="title-bar-content">
+          <div class="title-bar-left">순위</div>
+          <div class="title-bar-left"></div>
+          <div class="title-bar-left">대학교명</div>
+        </div>
+        <div class="title-bar-content">
+          <p>경쟁률</p>
+        </div>
+      </div>
+      <div class="university-wrapper" v-for="(university, idx) in filteredUniversity" :key="idx"
+        @click="detailPage(university)">
+        <div class="university-content">
+          <p>{{ idx + 1 }}</p>
+          <div class="university-logo">
+            <img :src="require(`../assets/logo/${university.name}.png`)" />
+          </div>
+          <div class="university-name">
+            <p>{{ university.name }}</p>
+            <p>{{ university.engName }}</p>
+          </div>
+        </div>
+        <div class="university-content">
+          <p>{{ university.compRate }}</p>
+        </div>
+      </div>
 
     </main>
-</div>
-
+  </div>
 </template>
 
 <script>
@@ -99,23 +93,23 @@ import search from '@/assets/svg/search.svg'
 
 
 export default {
-    name: 'MainPage',
-    components: {
-    },
-    setup() {
-        const router = useRouter()
-        const universities = ref([])  //  University 전체 데이터
-        const years = ref()    // 연도 
-        const qsActive = ref(false)
-        const theActive = ref(true)
-        const selectedYear = ref('2022')
-        const selectedSubject = ref(null)
-        const selectedSource = ref('THE')
-        const searchUniversity = ref('')
-        const noSearchValue = ref(false)
-        const loading = ref(true)
-        const data =  {
-         "universities" : [
+  name: 'MainPage',
+  components: {
+  },
+  setup() {
+    const router = useRouter()
+    const universities = ref([])  //  University 전체 데이터
+    const years = ref()    // 연도 
+    const qsActive = ref(false)
+    const theActive = ref(true)
+    const selectedYear = ref('2022')
+    const selectedSubject = ref(null)
+    const selectedSource = ref('THE')
+    const searchUniversity = ref('')
+    const noSearchValue = ref(false)
+    const loading = ref(true)
+    const data = {
+      "universities": [
         {
           "website": "https://www.snu.ac.kr/",
           "citation": "https://www.snu.ac.kr/about/overview/vision",
@@ -6005,450 +5999,455 @@ export default {
           "id": 44
         }
       ]
-}
+    }
 
 
 
- 
 
 
-        onBeforeMount(() => {
-            // getData()
-            universities.value = data.universities
-            console.log(universities.value[0].source.QS)
-            years.value = Object.keys(universities.value[0].source.QS).sort((y1, y2) => y1 > y2 ? -1 : 1)
-            loading.value = false
+
+    onBeforeMount(() => {
+      // getData()
+      universities.value = data.universities
+      console.log(universities.value[0].source.QS)
+      years.value = Object.keys(universities.value[0].source.QS).sort((y1, y2) => y1 > y2 ? -1 : 1)
+      loading.value = false
+    })
+
+    const getData = async () => {
+      const res = await axios.get()
+      universities.value = res.data
+      years.value = Object.keys(res.data[0].source.QS).sort((y1, y2) => y1 > y2 ? -1 : 1)
+      loading.value = false
+    }
+
+    const filteredUniversity = computed(() => {
+      if (searchUniversity.value) {
+        return universities.value.filter(university => {  //  대학교 이름 검색 시
+          return university.name.includes(searchUniversity.value)
         })
+      }
 
-        const getData = async () => {
-            const res = await axios.get()
-            universities.value = res.data
-            years.value = Object.keys(res.data[0].source.QS).sort((y1, y2) => y1 > y2 ? -1 : 1)
-            loading.value = false
+      if (selectedSubject.value) {   // 학과 검색 시
+        return [...universities.value.filter(university => { return university.source[selectedSource.value][selectedYear.value] })]
+          .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].subject[selectedSubject.value] < u2.source[selectedSource.value][selectedYear.value].subject[selectedSubject.value])
+      }
+
+      // 그 외
+      return [...universities.value.filter(university => { return university.source[selectedSource.value][selectedYear.value] })]  // 해당 연도 데이터 없는 리스트 제거
+        .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].rank < u2.source[selectedSource.value][selectedYear.value].rank ? -1 : 1)   // 리스트 sort
+    })
+
+    const detailPage = (data) => {
+      router.push({
+        name: 'Info',
+        params: {
+          id: data.id,
+          name: data.name,
+          data: JSON.stringify(data)
         }
-
-        const filteredUniversity = computed(() => {
-            if (searchUniversity.value) {   
-                return universities.value.filter(university => {  //  대학교 이름 검색 시
-                    return university.name.includes(searchUniversity.value)
-                })
-            }
-
-            if (selectedSubject.value) {   // 학과 검색 시
-                return [...universities.value.filter(university => { return university.source[selectedSource.value][selectedYear.value]})]
-                .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].subject[selectedSubject.value] < u2.source[selectedSource.value][selectedYear.value].subject[selectedSubject.value])
-            }
-            
-            // 그 외
-            return [...universities.value.filter(university => {return university.source[selectedSource.value][selectedYear.value]})]  // 해당 연도 데이터 없는 리스트 제거
-            .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].rank < u2.source[selectedSource.value][selectedYear.value].rank ? -1 : 1)   // 리스트 sort
-        })
-
-        const detailPage = (data) => {
-            router.push({
-                name: 'Info',
-                params: {
-                    id: data.id,
-                    name: data.name,
-                    data: JSON.stringify(data)
-                }
-            })
-        }
+      })
+    }
 
 
-        return {
-            years,
-            detailPage,
-            filteredUniversity,
-            selectedYear,
-            selectedSource,
-            searchUniversity,
-            selectedSubject,
-            loading,
-            theActive,
-            qsActive,
-            sourceSvg,
-            arrowDown,
-            search
+    return {
+      years,
+      detailPage,
+      filteredUniversity,
+      selectedYear,
+      selectedSource,
+      searchUniversity,
+      selectedSubject,
+      loading,
+      theActive,
+      qsActive,
+      sourceSvg,
+      arrowDown,
+      search
 
-        }
-    },
+    }
+  },
 }
 </script>
 
 
 
 <style lang="scss" scoped>
+.container {
+  background: #F5F5F5;
+}
+
 .website-title {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 90px;
+  width: 100vw;
+  height: 450px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image: url("@/assets/images/university_1.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(80%);
+  }
+
+  .title-content {
+    text-align: center;
     position: relative;
-    margin-bottom: 90px;
-    width: 100vw;
-    height: 450px;
 
-    &::before {
-        content: "";
-        position: absolute;
-        display: block;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background-image: url("@/assets/images/university_1.jpg");
-        background-position: center;
-        background-repeat: no-repeat;
-        filter: brightness(80%);
+    &:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 60%;
+      min-width: max-content;
+
+      .title {
+        @include engTitleFont();
+        font-size: 8rem;
+        color: #fff
+      }
+
+      .title-description {
+        @include engContentFont();
+        width: 70%;
+        text-align: left;
+      }
     }
 
-    .title-content {
-        text-align: center;
-        position: relative;
+    &:nth-child(2) {
+      @include centerElement();
+      width: 30%;
 
-        &:nth-child(1) {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 60%;
-            min-width: max-content;
-
-            .title {
-                @include engTitleFont();
-                font-size: 8rem;
-                color: #fff
-            }
-
-            .title-description {
-                @include engContentFont();
-                width: 70%;
-                text-align: left;
-            }
-        }
-
-        &:nth-child(2) {
-            @include centerElement();
-            width: 30%;
-
-            img {
-                height: 90%;
-            }
-        }
+      img {
+        height: 90%;
+      }
     }
+  }
 }
 
 .main {
-    width: max(70%, 900px);
-    min-height: 900px;
-    margin: 0 auto 200px auto;
+  width: max(70%, 900px);
+  min-height: 900px;
+  margin: 0 auto 200px auto;
 }
+
 .filter-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  margin-bottom: 25px;
+
+  .source-filter {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    height: 60px;
-    margin-bottom: 25px;
+    width: 30%;
+    height: 100%;
 
-    .source-filter {
-        display: flex;
-        width: 30%;
+    .source {
+      @extend %sourceBtn;
+      display: flex;
+      align-items: center;
+      width: 48%;
+
+      .source_img {
+        @include centerElement();
         height: 100%;
+        width: 35px;
+        margin: 0 10px;
 
-        .source {
-            @extend %sourceBtn;
-            display: flex;
-            align-items: center;
-            width: 48%;
-
-            .source_img {
-                @include centerElement();
-                height: 100%;
-                width: 35px;
-                margin: 0 10px;
-                
-                img {
-                    min-width: 70%;
-                    height: 70%;
-                }
-            }
-            
-            span {
-                @include engContentFont();
-                height: fit-content;
-                width: 80px;
-                font-size: 1.7rem;
-                color: $mainColor;
-                padding: 0 max(1vw, 15px);
-
-            }
-            
-            &:nth-child(1) {
-                &.active {
-                    background: $theColor;
-                }
-            }
-            
-            &:nth-child(2) {
-                &.active {
-                    background: $qsColor;
-                }
-            }
+        img {
+          min-width: 70%;
+          height: 70%;
         }
+      }
 
+      span {
+        @include engContentFont();
+        height: fit-content;
+        width: 80px;
+        font-size: 1.7rem;
+        color: $mainColor;
+        padding: 0 max(1vw, 15px);
+
+      }
+
+      &:nth-child(1) {
+        &.active {
+          background: $theColor;
+        }
+      }
+
+      &:nth-child(2) {
+        &.active {
+          background: $qsColor;
+        }
+      }
     }
 
-    .year-filter {
-        width: 15%;
-        height: 100%;
-        position: relative;
-        
-        
-        select {
-            @include engContentFont();
-            cursor: pointer;
-            appearance: none;
-            width: 100%;
-            height: 100%;
-            font-size: 1.7rem;
-            font-weight: bold;
-            color: $mainColor;
-            padding: 10px 10px 0 10px;
-            border: none;
-            border-bottom: 3px solid $mainColor;
-            transition: all 0.3s ease;
+  }
 
-            &:hover {
-                background: #f2f2f2;
-            }
-        }
+  .year-filter {
+    width: 15%;
+    height: 100%;
+    position: relative;
 
-        .year-arrow {
-            position: absolute;
-            top: 55%;
-            right: 5px;
-            transform: translateY(-50%);
-            width: 25px;
-            height: 25px;
-            pointer-events: none;
 
-            img {
-                width: 100%;
-                height: 100%;
-            }
-        }
+    select {
+      @include engContentFont();
+      cursor: pointer;
+      appearance: none;
+      width: 100%;
+      height: 100%;
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: $mainColor;
+      padding: 10px 10px 0 10px;
+      border: none;
+      border-bottom: 3px solid $mainColor;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f2f2f2;
+      }
     }
 
-    .search-filter {
-        position: relative;
-        width: 30%;
+    .year-arrow {
+      position: absolute;
+      top: 55%;
+      right: 5px;
+      transform: translateY(-50%);
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+
+      img {
+        width: 100%;
         height: 100%;
-        
-        input[type="search"]::-webkit-search-decoration,
-        input[type="search"]::-webkit-search-cancel-button,
-        input[type="search"]::-webkit-search-results-button,
-        input[type="search"]::-webkit-search-results-decoration {
-            -webkit-appearance:none;
-        }
-        input {
-            @include korContentFont();
-            font-size: 24px;
-            font-weight: 600;
-            color: $mainColor;
-            padding: 8px 10px 0 10px;
-            border: none;
-            border-bottom: 3px solid $mainColor;
-            width: 100%;
-            height: 100%;
-            transition: all 0.3s ease;
+      }
+    }
+  }
 
-            &:hover {
-                background: #f2f2f2;
-            }
-        }
+  .search-filter {
+    position: relative;
+    width: 30%;
+    height: 100%;
 
-        .search-icon {
-            position: absolute;
-            top: 55%;
-            right: 5px;
-            transform: translateY(-50%);
-            pointer-events: none;
-            width: 35px;
-            height: 35px;
-
-
-            img {
-                width: 100%;
-                height: 100%;
-                filter: invert(16%) sepia(10%) saturate(31%) hue-rotate(323deg) brightness(101%) contrast(90%);
-            }
-        }
+    input[type="search"]::-webkit-search-decoration,
+    input[type="search"]::-webkit-search-cancel-button,
+    input[type="search"]::-webkit-search-results-button,
+    input[type="search"]::-webkit-search-results-decoration {
+      -webkit-appearance: none;
     }
 
-    .subject-filter {
-        position: relative;
-        width: 15%;
-        height: 100%;
+    input {
+      @include korContentFont();
+      font-size: 24px;
+      font-weight: 600;
+      color: $mainColor;
+      padding: 8px 10px 0 10px;
+      border: none;
+      border-bottom: 3px solid $mainColor;
+      width: 100%;
+      height: 100%;
+      transition: all 0.3s ease;
 
-        select {
-            @include korContentFont();
-            cursor: pointer;
-            appearance: none;
-            width: 100%;
-            height: 100%;
-            font-size: 22px;
-            font-weight: bold;
-            color: $mainColor;
-            padding: 10px 10px 0 10px;
-            border: none;
-            border-bottom: 3px solid $mainColor;
-            transition: all 0.3s ease;
-
-            &:hover {
-                background: #f2f2f2;
-            }
-        }
-
-        .subject-arrow {
-            position: absolute;
-            top: 55%;
-            right: 5px;
-            transform: translateY(-50%);
-            width: 25px;
-            height: 25px;
-            pointer-events: none;
-
-            img {
-                width: 100%;
-                height: 100%;
-            }
-        }
+      &:hover {
+        background: #f2f2f2;
+      }
     }
+
+    .search-icon {
+      position: absolute;
+      top: 55%;
+      right: 5px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      width: 35px;
+      height: 35px;
+
+
+      img {
+        width: 100%;
+        height: 100%;
+        filter: invert(16%) sepia(10%) saturate(31%) hue-rotate(323deg) brightness(101%) contrast(90%);
+      }
+    }
+  }
+
+  .subject-filter {
+    position: relative;
+    width: 15%;
+    height: 100%;
+
+    select {
+      @include korContentFont();
+      cursor: pointer;
+      appearance: none;
+      width: 100%;
+      height: 100%;
+      font-size: 22px;
+      font-weight: bold;
+      color: $mainColor;
+      padding: 10px 10px 0 10px;
+      border: none;
+      border-bottom: 3px solid $mainColor;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f2f2f2;
+      }
+    }
+
+    .subject-arrow {
+      position: absolute;
+      top: 55%;
+      right: 5px;
+      transform: translateY(-50%);
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
 }
 
 .title-bar-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 50px;
+  font-size: 1.3rem;
+  border-radius: 5px;
+  background: $mainColor;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  .title-bar-content {
+    @include korContentFont();
+    font-weight: bold;
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    height: 50px;
-    font-size: 1.3rem;
-    border-radius: 5px;
-    background: $mainColor;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
-    .title-bar-content {
-        @include korContentFont();
-        font-weight: bold;
-        display: flex;
-        color: white;
+    color: white;
 
 
-        &:nth-child(1) {
-            width: 60%;
-            height: 100%;
-        }
-    
-        &:nth-child(2) {
-            @include centerElement();
-            min-width: 200px;
-            height: 100%;
-            
-        }
-
-        .title-bar-left {
-
-            &:nth-child(1) {
-                @include centerElement();
-                width: 20%;
-            }
-
-            &:nth-child(2) {
-                width: 35%;
-            }
-
-            &:nth-child(3) {
-                display: flex;
-                align-items: center;
-                width: 45%;
-            }
-        }
+    &:nth-child(1) {
+      width: 60%;
+      height: 100%;
     }
-    
+
+    &:nth-child(2) {
+      @include centerElement();
+      min-width: 200px;
+      height: 100%;
+
+    }
+
+    .title-bar-left {
+
+      &:nth-child(1) {
+        @include centerElement();
+        width: 20%;
+      }
+
+      &:nth-child(2) {
+        width: 35%;
+      }
+
+      &:nth-child(3) {
+        display: flex;
+        align-items: center;
+        width: 45%;
+      }
+    }
+  }
+
 }
 
 .university-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 120px;
-    margin: 1rem 0;
-    border: 1px solid #bfbfbf;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-    transition: all 0.2s ease;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 120px;
+  margin: 1rem 0;
+  border: 1px solid #bfbfbf;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 
-    &:hover {
-        background: #f2f2f2;
-    }
-    
-    
-    .university-content {
-        @include korContentFont();
-        font-weight: bold;
-        font-size: 1.5rem;
-        
-        &:nth-child(1) {
-            display: flex;
-            width: 60%;
-            height: 100%;
+  &:hover {
+    background: #f2f2f2;
+  }
 
-            p {
-                @include centerElement();
-                width: 20%;
-            }
 
-            .university-logo {
-                display: flex;
-                align-items: center;
-                width: 35%;
-                height: 100%;
-                padding-left: 2rem;
+  .university-content {
+    @include korContentFont();
+    font-weight: bold;
+    font-size: 1.5rem;
 
-                img {
-                    min-width: 80px;
-                    max-height: 90px;
-                }
-            }
+    &:nth-child(1) {
+      display: flex;
+      width: 60%;
+      height: 100%;
 
-            .university-name {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                justify-content: center;
+      p {
+        @include centerElement();
+        width: 20%;
+      }
 
-                p {
-                    width: fit-content;
+      .university-logo {
+        display: flex;
+        align-items: center;
+        width: 35%;
+        height: 100%;
+        padding-left: 2rem;
 
-                    &:nth-child(1) {
-                        color: $mainColor;
-                        font-size: 1.5rem;
-                    }
-
-                    &:nth-child(2) {
-                        color: #898989;
-                        font-size: 1rem;
-                    }
-                }
-            }
-
+        img {
+          min-width: 80px;
+          max-height: 90px;
         }
-    
-        &:nth-child(2) {
-            @include centerElement();
-            min-width: 200px;
-            height: 100%;
+      }
+
+      .university-name {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+
+        p {
+          width: fit-content;
+
+          &:nth-child(1) {
+            color: $mainColor;
+            font-size: 1.5rem;
+          }
+
+          &:nth-child(2) {
+            color: #898989;
+            font-size: 1rem;
+          }
         }
+      }
+
     }
+
+    &:nth-child(2) {
+      @include centerElement();
+      min-width: 200px;
+      height: 100%;
+    }
+  }
 }
-
 </style>
