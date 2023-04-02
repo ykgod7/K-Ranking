@@ -8,20 +8,16 @@
             </keep-alive>
         </router-view>
     </div>
-
-    <Footer />
 </template>
 
 
 <script>
 import Navbar from '@/components/NavbarPage.vue'
-import Footer from '@/components/FooterPage.vue'
 
 
 export default {
     components: {
         Navbar,
-        Footer
     }
 }
 </script>
@@ -29,6 +25,6 @@ export default {
 <style lang="scss" scoped>
 .container {
     width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 </style>

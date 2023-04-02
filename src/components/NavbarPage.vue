@@ -87,9 +87,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$material-icons-font-path: '~material-icons/iconfont/';
-@import '~material-icons/iconfont/material-icons.scss';
-
 .navbar {
     @include centerElement();
     z-index: 10;
@@ -98,10 +95,11 @@ $material-icons-font-path: '~material-icons/iconfont/';
     position: sticky;
     top: 0;
     transition: all 0.2s ease;
+    border-bottom: 1px solid #F2F2F2;
 
     .navbar-wrapper {
         height: 100%;
-        width: 1024px;
+        width: 944px;
 
         .row-1 {
             display: flex;
@@ -139,7 +137,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
 
         .row-2 {
             position: absolute;
-            width: 1024px;
+            width: 944px;
             bottom: 40px;
             display: flex;
             justify-content: space-between;

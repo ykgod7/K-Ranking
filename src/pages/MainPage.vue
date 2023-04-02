@@ -2,24 +2,7 @@
   <div v-if="loading"></div>
   <div class="container" v-else>
     <!-- Filters -->
-    <main class="main">
-      <div class="filter-wrapper">
-        <!-- Source Selector -->
-        <div class="source-filter">
-          <div class="source" :class="theActive ? 'active' : null"
-            @click="selectedSource = 'THE', selectedSubject = null, theActive = true, qsActive = false">
-            <div class="source_img"><img :src="sourceSvg" /></div>
-            <span>THE</span>
-          </div>
-
-          <div class="source" :class="qsActive ? 'active' : null"
-            @click="selectedSource = 'QS', selectedSubject = null, qsActive = true, theActive = false">
-            <div class="source_img"><img :src="sourceSvg" /></div>
-            <span>QS</span>
-          </div>
-        </div>
-
-        <!-- Year Filter -->
+    <!-- <div class="filter-wrapper">
         <div class="year-filter">
           <select v-model="selectedYear" @change="selectedYear = selectedYear">
             <option :key="i" v-for="(val, i) in years" :value="val">{{ val }}</option>
@@ -27,18 +10,16 @@
           <div class="year-arrow"><img :src="arrowDown" /></div>
         </div>
 
-        <!-- Name Filter -->
         <div class="search-filter">
           <input onkeydown="return (event.keyCode!=13);" type="search" placeholder="학교명 검색"
             aria-describedby="button-addon3" v-model="searchUniversity">
           <div class="search-icon"><img :src="search" /></div>
         </div>
 
-        <!-- Subject Filter -->
         <div class="subject-filter">
           <select v-model="selectedSubject" @change="selectedSubject = selectedSubject">
             <option :value="null">학과</option>
-            <!-- eslint-disable-next-line -->
+            eslint-disable-next-line
             <option v-if="selectedSource === 'QS'" v-for="(subject, i) in filteredUniversity[0].qs_subjects" :key="i"
               :value="subject">{{ subject }}</option>
             <option v-else v-for="(subject, j) in filteredUniversity[0].the_subjects" :key="j" :value="subject">{{ subject
@@ -46,38 +27,40 @@
           </select>
           <div class="subject-arrow"><img :src="arrowDown" /></div>
         </div>
-      </div>
+      </div> -->
 
 
-      <!-- 대학교 리스트 -->
-      <div class="title-bar-wrapper">
-        <div class="title-bar-content">
-          <div class="title-bar-left">순위</div>
-          <div class="title-bar-left"></div>
-          <div class="title-bar-left">대학교명</div>
-        </div>
-        <div class="title-bar-content">
-          <p>경쟁률</p>
-        </div>
+    <!-- 대학교 리스트 -->
+    <div class="top-bar-wrapper">
+      <div class="inner-wrapper">
+        <div class="filter">순위<span class="material-icons-round icon">north</span></div>
+        <div class="filter">대학교명<span class="material-icons-round icon">north</span></div>
+        <div class="filter">입학 경쟁률<span class="material-icons-round icon">north</span></div>
+        <div class="filter">총 학생수<span class="material-icons-round icon">north</span></div>
+        <div class="filter">학생/교수 비율<span class="material-icons-round icon">north</span></div>
+        <div class="filter">등록금<span class="material-icons-round icon">north</span></div>
       </div>
+    </div>
+
+    <div class="university-container">
       <div class="university-wrapper" v-for="(university, idx) in filteredUniversity" :key="idx"
         @click="detailPage(university)">
-        <div class="university-content">
-          <p>{{ idx + 1 }}</p>
-          <div class="university-logo">
-            <img :src="require(`../assets/logo/${university.name}.png`)" />
+        <div class="inner-wrapper">
+          <div class="rank">{{ idx + 1 }}</div>
+          <div class="university">
+            <img class="logo" :src="require(`../assets/logo/${university.name}.png`)" />
+            <div class="name">
+              <p class="name-korean">{{ university.name }}</p>
+              <p class="name-english">{{ university.engName }}</p>
+            </div>
           </div>
-          <div class="university-name">
-            <p>{{ university.name }}</p>
-            <p>{{ university.engName }}</p>
-          </div>
-        </div>
-        <div class="university-content">
-          <p>{{ university.compRate }}</p>
+          <div class="compRate">13.7:1</div>
+          <div class="totStud">37125 명</div>
+          <div class="SFRatio">27:1</div>
+          <div class="tuition">6001785 원</div>
         </div>
       </div>
-
-    </main>
+    </div>
   </div>
 </template>
 
@@ -100,13 +83,10 @@ export default {
     const router = useRouter()
     const universities = ref([])  //  University 전체 데이터
     const years = ref()    // 연도 
-    const qsActive = ref(false)
-    const theActive = ref(true)
     const selectedYear = ref('2022')
     const selectedSubject = ref(null)
     const selectedSource = ref('THE')
     const searchUniversity = ref('')
-    const noSearchValue = ref(false)
     const loading = ref(true)
     const data = {
       "universities": [
@@ -6059,8 +6039,6 @@ export default {
       searchUniversity,
       selectedSubject,
       loading,
-      theActive,
-      qsActive,
       sourceSvg,
       arrowDown,
       search
@@ -6073,381 +6051,199 @@ export default {
 
 
 <style lang="scss" scoped>
+::-webkit-scrollbar {
+  display: none;
+}
+
 .container {
   background: #F5F5F5;
-}
 
-.website-title {
-  display: flex;
-  justify-content: center;
-  position: relative;
-  margin-bottom: 90px;
-  width: 100vw;
-  height: 450px;
 
-  &::before {
-    content: "";
-    position: absolute;
-    display: block;
+
+  .top-bar-wrapper {
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    position: sticky;
     top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-image: url("@/assets/images/university_1.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: brightness(80%);
-  }
+    width: 944px;
+    margin: 0 auto;
+    padding-bottom: 12px;
+    background: #F5F5F5;
+    height: 110px;
 
-  .title-content {
-    text-align: center;
-    position: relative;
-
-    &:nth-child(1) {
+    .inner-wrapper {
+      position: relative;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 60%;
-      min-width: max-content;
+      justify-content: space-between;
+      width: 800px;
 
-      .title {
-        @include engTitleFont();
-        font-size: 8rem;
-        color: #fff
-      }
-
-      .title-description {
-        @include engContentFont();
-        width: 70%;
-        text-align: left;
-      }
-    }
-
-    &:nth-child(2) {
-      @include centerElement();
-      width: 30%;
-
-      img {
-        height: 90%;
-      }
-    }
-  }
-}
-
-.main {
-  width: max(70%, 900px);
-  min-height: 900px;
-  margin: 0 auto 200px auto;
-}
-
-.filter-wrapper {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 60px;
-  margin-bottom: 25px;
-
-  .source-filter {
-    display: flex;
-    width: 30%;
-    height: 100%;
-
-    .source {
-      @extend %sourceBtn;
-      display: flex;
-      align-items: center;
-      width: 48%;
-
-      .source_img {
-        @include centerElement();
-        height: 100%;
-        width: 35px;
-        margin: 0 10px;
-
-        img {
-          min-width: 70%;
-          height: 70%;
-        }
-      }
-
-      span {
-        @include engContentFont();
-        height: fit-content;
-        width: 80px;
-        font-size: 1.7rem;
-        color: $mainColor;
-        padding: 0 max(1vw, 15px);
-
-      }
-
-      &:nth-child(1) {
-        &.active {
-          background: $theColor;
-        }
-      }
-
-      &:nth-child(2) {
-        &.active {
-          background: $qsColor;
-        }
-      }
-    }
-
-  }
-
-  .year-filter {
-    width: 15%;
-    height: 100%;
-    position: relative;
-
-
-    select {
-      @include engContentFont();
-      cursor: pointer;
-      appearance: none;
-      width: 100%;
-      height: 100%;
-      font-size: 1.7rem;
-      font-weight: bold;
-      color: $mainColor;
-      padding: 10px 10px 0 10px;
-      border: none;
-      border-bottom: 3px solid $mainColor;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: #f2f2f2;
-      }
-    }
-
-    .year-arrow {
-      position: absolute;
-      top: 55%;
-      right: 5px;
-      transform: translateY(-50%);
-      width: 25px;
-      height: 25px;
-      pointer-events: none;
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-
-  .search-filter {
-    position: relative;
-    width: 30%;
-    height: 100%;
-
-    input[type="search"]::-webkit-search-decoration,
-    input[type="search"]::-webkit-search-cancel-button,
-    input[type="search"]::-webkit-search-results-button,
-    input[type="search"]::-webkit-search-results-decoration {
-      -webkit-appearance: none;
-    }
-
-    input {
-      @include korContentFont();
-      font-size: 24px;
-      font-weight: 600;
-      color: $mainColor;
-      padding: 8px 10px 0 10px;
-      border: none;
-      border-bottom: 3px solid $mainColor;
-      width: 100%;
-      height: 100%;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: #f2f2f2;
-      }
-    }
-
-    .search-icon {
-      position: absolute;
-      top: 55%;
-      right: 5px;
-      transform: translateY(-50%);
-      pointer-events: none;
-      width: 35px;
-      height: 35px;
-
-
-      img {
-        width: 100%;
-        height: 100%;
-        filter: invert(16%) sepia(10%) saturate(31%) hue-rotate(323deg) brightness(101%) contrast(90%);
-      }
-    }
-  }
-
-  .subject-filter {
-    position: relative;
-    width: 15%;
-    height: 100%;
-
-    select {
-      @include korContentFont();
-      cursor: pointer;
-      appearance: none;
-      width: 100%;
-      height: 100%;
-      font-size: 22px;
-      font-weight: bold;
-      color: $mainColor;
-      padding: 10px 10px 0 10px;
-      border: none;
-      border-bottom: 3px solid $mainColor;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: #f2f2f2;
-      }
-    }
-
-    .subject-arrow {
-      position: absolute;
-      top: 55%;
-      right: 5px;
-      transform: translateY(-50%);
-      width: 25px;
-      height: 25px;
-      pointer-events: none;
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-}
-
-.title-bar-wrapper {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 50px;
-  font-size: 1.3rem;
-  border-radius: 5px;
-  background: $mainColor;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
-  .title-bar-content {
-    @include korContentFont();
-    font-weight: bold;
-    display: flex;
-    color: white;
-
-
-    &:nth-child(1) {
-      width: 60%;
-      height: 100%;
-    }
-
-    &:nth-child(2) {
-      @include centerElement();
-      min-width: 200px;
-      height: 100%;
-
-    }
-
-    .title-bar-left {
-
-      &:nth-child(1) {
-        @include centerElement();
-        width: 20%;
-      }
-
-      &:nth-child(2) {
-        width: 35%;
-      }
-
-      &:nth-child(3) {
+      .filter {
         display: flex;
-        align-items: center;
-        width: 45%;
-      }
-    }
-  }
+        cursor: pointer;
+        font-family: 'pretendard';
+        font-weight: 500;
+        font-size: 14px;
+        color: #222222;
+        line-height: 17px;
 
-}
+        .icon {
+          margin: 0 1px;
+          font-size: 13px;
+          color: #222222;
 
-.university-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 120px;
-  margin: 1rem 0;
-  border: 1px solid #bfbfbf;
-  border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    background: #f2f2f2;
-  }
-
-
-  .university-content {
-    @include korContentFont();
-    font-weight: bold;
-    font-size: 1.5rem;
-
-    &:nth-child(1) {
-      display: flex;
-      width: 60%;
-      height: 100%;
-
-      p {
-        @include centerElement();
-        width: 20%;
-      }
-
-      .university-logo {
-        display: flex;
-        align-items: center;
-        width: 35%;
-        height: 100%;
-        padding-left: 2rem;
-
-        img {
-          min-width: 80px;
-          max-height: 90px;
-        }
-      }
-
-      .university-name {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-
-        p {
-          width: fit-content;
-
-          &:nth-child(1) {
-            color: $mainColor;
-            font-size: 1.5rem;
-          }
-
-          &:nth-child(2) {
-            color: #898989;
-            font-size: 1rem;
+          &.rotate {
+            transform: rotate(180deg);
           }
         }
+
+        &:nth-child(1) {
+          width: 60px;
+
+          .icon {
+            color: #FF7A00;
+          }
+        }
+
+        &:nth-child(2) {
+          width: 240px;
+
+          .icon {
+            color: #82E1FF;
+          }
+        }
+
+        &:nth-child(3) {
+          width: 80px;
+        }
+
+        &:nth-child(4) {
+          width: 80px;
+        }
+
+        &:nth-child(5) {
+          width: 100px;
+        }
+
+        &:nth-child(6) {
+          width: 95px;
+        }
+      }
+    }
+  }
+
+
+
+  .university-container {
+    width: 944px;
+    height: calc(100vh - 374px);
+    margin: 0 auto;
+
+    .university-wrapper {
+      height: 80px;
+      border: 1px solid #F2F2F2;
+      background: #fff;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      margin-bottom: 10px;
+      cursor: pointer;
+
+      .inner-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 800px;
+        height: 100%;
+
+        .rank {
+          padding-left: 20px;
+          width: 60px;
+          font-family: 'pretendard';
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 19px;
+          color: #222222;
+        }
+
+        .university {
+          display: flex;
+          width: 240px;
+
+          .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 8px;
+          }
+
+          .name {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .name-korean {
+              font-family: 'pretendard';
+              font-size: 16px;
+              color: #222222;
+              font-weight: 700;
+              line-height: 19px;
+            }
+
+            .name-english {
+              font-family: 'pretendard';
+              font-size: 8px;
+              font-weight: 500;
+              line-height: 9px;
+              color: #BABABA;
+            }
+          }
+        }
+
+        .compRate {
+          font-family: 'pretendard';
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 19px;
+          color: #222222;
+          width: 80px;
+          text-align: center;
+        }
+
+        .totStud {
+          font-family: 'pretendard';
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 19px;
+          color: #222222;
+          width: 80px;
+          text-align: center;
+
+        }
+
+        .SFRatio {
+          font-family: 'pretendard';
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 19px;
+          color: #222222;
+          width: 100px;
+          text-align: center;
+
+        }
+
+        .tuition {
+          font-family: 'pretendard';
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 19px;
+          color: #222222;
+          width: 95px;
+          text-align: center;
+
+        }
       }
 
     }
-
-    &:nth-child(2) {
-      @include centerElement();
-      min-width: 200px;
-      height: 100%;
-    }
   }
+
 }
 </style>
