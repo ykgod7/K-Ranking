@@ -22,13 +22,12 @@
                     <div class="year-dropdown" @click="yearDropdown = !yearDropdown">
                         <!-- 년도 데이터  -->
                         <div class="current">
-                            <p>2023</p>
+                            <p>{{ selectedYear }}</p>
                         </div>
                         <div class="dropdown-content" v-if="yearDropdown">
                             <!-- 반복문으로 연도 넣기 -->
-                            <div class="option" @click="getSelectedYearData(year)">2022</div>
-                            <div class="option">2021</div>
-                            <div class="option">2020</div>
+                            <div class="option" v-for="year in years" :key="year" @click="getSelectedYearData(year)">{{ year
+                            }}</div>
                         </div>
                         <span class="material-icons-round icon">arrow_drop_down</span>
 
@@ -38,13 +37,12 @@
                     <div class="filter-name">학부/학과명</div>
                     <div class="subject-dropdown" @click="subjectDropdown = !subjectDropdown">
                         <div class="current">
-                            <p>전체</p>
+                            <p>{{ selectedMajor }}</p>
                         </div>
                         <div class="dropdown-content" v-if="subjectDropdown">
-                            <div class="option">간호학과</div>
-                            <div class="option">경제학과</div>
-                            <div class="option">기계공학과</div>
-                            <div class="option">법학과</div>
+                            <div class="option" @click="selectedMajor = '전체'">전체</div>
+                            <div class="option" v-for="(major, idx) in majors" :key="idx" @click="selectedMajor = major">
+                                {{ major }}</div>
                         </div>
                         <span class="material-icons-round icon">arrow_drop_down</span>
                     </div>
@@ -63,24 +61,39 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
-    components: {
-    },
+    name: 'NavbarPage',
     setup() {
+        const store = useStore()
         const yearDropdown = ref(false)
-        const subjectDropdown = ref(0)
+        const subjectDropdown = ref(false)
+        const selectedMajor = ref('전체')
+        const selectedYear = ref(2022)
+
+        const majors = computed(() => {
+            return store.state.majors[0]
+        })
+
+        const years = computed(() => {
+            return store.state.years[0]
+        })
 
         const getSelectedYearData = (year) => {
-            console.log('clicked')
+            selectedYear.value = year
         }
 
 
         return {
             subjectDropdown,
             yearDropdown,
-            getSelectedYearData
+            getSelectedYearData,
+            selectedMajor,
+            selectedYear,
+            majors,
+            years
         }
     },
 }
@@ -187,6 +200,8 @@ export default {
                         position: fixed;
                         z-index: 1;
                         width: 221px;
+                        height: 300px;
+                        overflow-y: scroll;
                         border: 1px solid #F2F2F2;
                         border-radius: 0 0 4px 4px;
 
@@ -257,7 +272,8 @@ export default {
                         width: 341px;
                         border: 1px solid #F2F2F2;
                         border-radius: 0 0 4px 4px;
-                        // display: none;
+                        height: 300px;
+                        overflow-y: scroll;
 
                         .option {
                             font-family: 'pretendard';
