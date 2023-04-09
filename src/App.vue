@@ -13,7 +13,7 @@
 
 <script>
 import Navbar from '@/components/NavbarPage.vue'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, watch, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 
 
@@ -9093,6 +9093,10 @@ export default {
             store.commit('setMajors', data.majors)
             store.commit('setYears', [2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009])
         })
+
+        // 연도 변경시 데이터 요청
+        watchEffect(() => console.log(store.state.selectedYear))
+
     }
 }
 </script>

@@ -1,34 +1,6 @@
 <template>
   <div v-if="loading"></div>
   <div class="container" v-else>
-    <!-- Filters -->
-    <!-- <div class="filter-wrapper">
-        <div class="year-filter">
-          <select v-model="selectedYear" @change="selectedYear = selectedYear">
-            <option :key="i" v-for="(val, i) in years" :value="val">{{ val }}</option>
-          </select>
-          <div class="year-arrow"><img :src="arrowDown" /></div>
-        </div>
-
-        <div class="search-filter">
-          <input onkeydown="return (event.keyCode!=13);" type="search" placeholder="학교명 검색"
-            aria-describedby="button-addon3" v-model="searchUniversity">
-          <div class="search-icon"><img :src="search" /></div>
-        </div>
-
-        <div class="subject-filter">
-          <select v-model="selectedSubject" @change="selectedSubject = selectedSubject">
-            <option :value="null">학과</option>
-            eslint-disable-next-line
-            <option v-if="selectedSource === 'QS'" v-for="(subject, i) in filteredUniversity[0].qs_subjects" :key="i"
-              :value="subject">{{ subject }}</option>
-            <option v-else v-for="(subject, j) in filteredUniversity[0].the_subjects" :key="j" :value="subject">{{ subject
-            }}</option>
-          </select>
-          <div class="subject-arrow"><img :src="arrowDown" /></div>
-        </div>
-      </div> -->
-
 
     <!-- 대학교 리스트 -->
     <div class="top-bar-wrapper">
@@ -81,16 +53,11 @@ export default {
   setup() {
     const router = useRouter()
     const store = useStore()
-    const years = ref()    // 연도 
-    const selectedYear = ref('2022')
-    const selectedSubject = ref(null)
-    const searchUniversity = ref('')
     const loading = ref(true)
 
     const universities = computed(() => {
-      return store.state.universities[0]
+      return store.getters.filterUniversity
     })
-
 
 
 
@@ -135,13 +102,8 @@ export default {
 
 
     return {
-      years,
       detailPage,
-      // filteredUniversity,
       universities,
-      selectedYear,
-      searchUniversity,
-      selectedSubject,
       loading,
       sourceSvg,
       arrowDown,

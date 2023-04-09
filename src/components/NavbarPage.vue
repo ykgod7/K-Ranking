@@ -17,22 +17,22 @@
             </div>
 
             <div class="row-2">
+                <!-- 연도 필터 -->
                 <div class="year-filter">
                     <div class="filter-name">년도</div>
                     <div class="year-dropdown" @click="yearDropdown = !yearDropdown">
-                        <!-- 년도 데이터  -->
                         <div class="current">
                             <p>{{ selectedYear }}</p>
                         </div>
                         <div class="dropdown-content" v-if="yearDropdown">
-                            <!-- 반복문으로 연도 넣기 -->
-                            <div class="option" v-for="year in years" :key="year" @click="getSelectedYearData(year)">{{ year
+                            <div class="option" v-for="year in years" :key="year" @click="chooseYear(year)">{{ year
                             }}</div>
                         </div>
                         <span class="material-icons-round icon">arrow_drop_down</span>
-
                     </div>
                 </div>
+
+                <!-- 학과 필터 -->
                 <div class="subject-filter">
                     <div class="filter-name">학부/학과명</div>
                     <div class="subject-dropdown" @click="subjectDropdown = !subjectDropdown">
@@ -40,8 +40,8 @@
                             <p>{{ selectedMajor }}</p>
                         </div>
                         <div class="dropdown-content" v-if="subjectDropdown">
-                            <div class="option" @click="selectedMajor = '전체'">전체</div>
-                            <div class="option" v-for="(major, idx) in majors" :key="idx" @click="selectedMajor = major">
+                            <div class="option" @click="choosMajor('Universities')">전체</div>
+                            <div class="option" v-for="(major, idx) in majors" :key="idx" @click="choosMajor(major)">
                                 {{ major }}</div>
                         </div>
                         <span class="material-icons-round icon">arrow_drop_down</span>
@@ -70,8 +70,10 @@ export default {
         const store = useStore()
         const yearDropdown = ref(false)
         const subjectDropdown = ref(false)
-        const selectedMajor = ref('전체')
-        const selectedYear = ref(2022)
+
+        const selectedMajor = computed(() => store.state.selectedMajor)
+
+        const selectedYear = computed(() => store.state.selectedYear)
 
         const majors = computed(() => {
             return store.state.majors[0]
@@ -85,13 +87,23 @@ export default {
             selectedYear.value = year
         }
 
+        const choosMajor = (major) => {
+            store.commit('choosMajor', major)
+        }
+
+        const chooseYear = (year) => {
+            store.commit('chooseYear', year)
+        }
+
 
         return {
             subjectDropdown,
             yearDropdown,
             getSelectedYearData,
-            selectedMajor,
+            choosMajor,
+            chooseYear,
             selectedYear,
+            selectedMajor,
             majors,
             years
         }
