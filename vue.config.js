@@ -5,7 +5,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     allowedHosts: "all",
-    proxy: 'http://52.79.78.43:8081/universities',
+    proxy: 'http://52.79.78.43:8081/api',
     changeOrigin: true,
   },
   css: {
