@@ -6,6 +6,7 @@ module.exports = defineConfig({
   devServer: {
     allowedHosts: "all",
     proxy: 'http://localhost:8081',
+    changeOrigin: true,
   },
   css: {
     loaderOptions: {
