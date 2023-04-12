@@ -9091,7 +9091,7 @@ export default {
 
         const getData = async () => {
             const res = await axios.get('/')
-            console.log(res)
+            console.log(res.data)
         }
 
         onBeforeMount(() => {
