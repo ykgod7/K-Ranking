@@ -132,7 +132,6 @@
 
 
 <script>
-import axios from '@/axios'
 import { useRoute } from 'vue-router'
 import { onBeforeMount, ref } from 'vue'
 import RankChart from '../components/RankChart.vue'
@@ -6057,12 +6056,12 @@ export default {
     })
 
 
-    const getData = async () => {  // 클릭한 학교의 데이터만 가져오기
-      const res = await axios.get()
-      universityData.value = res.data.universities.filter(university => {
-        return university.name.includes(route.params.name)
-      })[0]
-    }
+    // const getData = async () => {  // 클릭한 학교의 데이터만 가져오기
+    //   const res = await axios.get()
+    //   universityData.value = res.data.universities.filter(university => {
+    //     return university.name.includes(route.params.name)
+    //   })[0]
+    // }
 
 
     return {
