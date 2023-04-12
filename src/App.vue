@@ -9090,7 +9090,7 @@ export default {
         }
 
         const getData = async () => {
-            const res = await axios.get()
+            const res = await axios.get('/')
             console.log(res)
         }
 
