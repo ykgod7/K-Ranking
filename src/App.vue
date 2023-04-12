@@ -9090,7 +9090,7 @@ export default {
         }
 
         const getData = async () => {
-            const res = await axios.get('/api')
+            const res = await axios.get()
             console.log(res.data)
         }
 
