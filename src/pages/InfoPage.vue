@@ -1,131 +1,132 @@
 <template>
-    <div v-if="loading"> Loading... </div>
-    <body v-else>
-        <div class="university-title">
-            <div class="university-logo">
-                <img :src="require(`../assets/logo/${universityData.name}.png`)" />
-            </div>
-            <div class="university-name">
-                <p>{{ universityData.name }}</p>
-                <p>{{ universityData.engName }}</p>
-            </div>
+  <div v-if="loading"> Loading... </div>
+
+  <body v-else>
+    <div class="university-title">
+      <div class="university-logo">
+        <img :src="require(`../assets/logo/${universityData.name}.png`)" />
+      </div>
+      <div class="university-name">
+        <p>{{ universityData.name }}</p>
+        <p>{{ universityData.engName }}</p>
+      </div>
+    </div>
+
+    <div class="university-rank">
+      <i class="fa fa-crown m-2" style="margin-top: -1px"></i>
+      <p>2022 국내 대학 순위 # {{ universityData.rank }}</p>
+    </div>
+
+    <div class="graph-intro-wrapper">
+      <div class="university-graph">
+        <div class="graph-btn-wrapper">
+          <p>순위 그래프</p>
+          <div>
+            <button class="source-btn" @click="graph_source = 'THE'">THE</button>
+            <button class="source-btn" @click="graph_source = 'QS'">QS</button>
+          </div>
         </div>
-
-        <div class="university-rank">
-            <i class="fa fa-crown m-2" style="margin-top: -1px"></i>
-            <p>2022 국내 대학 순위 # {{ universityData.rank }}</p>
+        <div class="graph">
+          <RankChart :graph_source="graph_source" :universityData="universityData" />
         </div>
+      </div>
+      <div class="university-intro">
+        <p>학교 소개</p>
+        <div>
+          <p>{{ universityData.intro }}</p>
+          <br><br>
+          <p>출처 : <span><a :href="universityData.citation">{{ universityData.citation }}</a></span></p>
 
-        <div class="graph-intro-wrapper">
-            <div class="university-graph">
-                <div class="graph-btn-wrapper">
-                    <p>순위 그래프</p>
-                    <div>
-                        <button class="source-btn" @click="graph_source = 'THE'">THE</button>
-                        <button class="source-btn" @click="graph_source = 'QS'">QS</button>
-                    </div>
-                </div>
-                <div class="graph">
-                    <RankChart :graph_source="graph_source" :universityData="universityData" />
-                </div>
-            </div>
-            <div class="university-intro">
-                <p>학교 소개</p>
-                <div>
-                    <p>{{ universityData.intro }}</p>
-                    <br><br>
-                    <p>출처 : <span><a :href="universityData.citation">{{ universityData.citation }}</a></span></p>
-
-                </div>
-            </div>
         </div>
+      </div>
+    </div>
 
 
 
 
+
+    <div>
+
+
+      <!-- 네번째 줄 -->
+      <div>
+        <div>
+          <div>
+            <div>
+              <img src="../assets/images/multi.png">
+            </div>
+            <div>경쟁률</div>
+            <div>{{ universityData.compRate }}</div>
+          </div>
+        </div>
 
         <div>
-       
+          <div>
+            <div>
+              <img src="../assets/images/teacher.png">
+            </div>
+            <div>학생 교수 비율</div>
+            <div>{{ universityData.SFRatio }}</div>
+          </div>
+        </div>
 
-        <!-- 네번째 줄 -->
         <div>
+          <div>
             <div>
-                <div>    
-                    <div>
-                        <img src="../assets/images/multi.png">
-                    </div>
-                    <div>경쟁률</div>
-                    <div>{{ universityData.compRate }}</div>
-                </div>
+              <img src="../assets/images/student.png">
             </div>
-
-            <div>
-                <div>
-                    <div>
-                        <img src="../assets/images/teacher.png">
-                    </div>
-                    <div>학생 교수 비율</div>
-                    <div>{{ universityData.SFRatio }}</div>
-                </div>
-            </div>
-
-            <div>
-                <div>
-                    <div>
-                        <img src="../assets/images/student.png">
-                    </div>
-                    <div>총 학생수</div>
-                    <div>{{ universityData.TotStud }} 명</div>
-                </div>
-            </div>
-
-            <div>
-                <div>
-                    <div>
-                        <img src="../assets/images/money.png">
-                    </div>
-                    <div>학비</div>
-                    <div>{{ universityData.tuition }} 원</div>
-                </div>
-            </div>
+            <div>총 학생수</div>
+            <div>{{ universityData.TotStud }} 명</div>
+          </div>
         </div>
 
-        <!-- 다섯번째 줄 -->
         <div>
+          <div>
             <div>
-                <img src="../assets/images/ranking_64.png">학과별 순위
-                <button @click="subject_source = 'THE'">THE</button>
-                <button @click="subject_source = 'QS'">QS</button>
+              <img src="../assets/images/money.png">
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>학과</th>
-                        <th>순위</th>
-                    </tr>
-                </thead>
-                <tbody v-if="subject_source === 'THE'">   
-                    <tr v-for="(rank, subject) in universityData.source.THE['2022'].subject" :key="subject">
-                        <td>{{ subject }}</td>
-                        <td>{{ rank }}</td>
-                    </tr>
-                </tbody>
-                <tbody v-else>
-                    <tr v-for="(rank, subject) in universityData.source.QS['2022'].subject" :key="subject">
-                        <td>{{ subject }}</td>
-                        <td>{{ rank }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div>학비</div>
+            <div>{{ universityData.tuition }} 원</div>
+          </div>
         </div>
+      </div>
 
-        <!-- 여섯번째 줄 -->
+      <!-- 다섯번째 줄 -->
+      <div>
         <div>
-            <div>학교 홈페이지 : <a v-bind:href="universityData.website">{{ universityData.website }}</a></div>
+          <img src="../assets/images/ranking_64.png">학과별 순위
+          <button @click="subject_source = 'THE'">THE</button>
+          <button @click="subject_source = 'QS'">QS</button>
         </div>
-        <br />
-        </div>
-    </body>
+        <table>
+          <thead>
+            <tr>
+              <th>학과</th>
+              <th>순위</th>
+            </tr>
+          </thead>
+          <tbody v-if="subject_source === 'THE'">
+            <tr v-for="(rank, subject) in universityData.source.THE['2022'].subject" :key="subject">
+              <td>{{ subject }}</td>
+              <td>{{ rank }}</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr v-for="(rank, subject) in universityData.source.QS['2022'].subject" :key="subject">
+              <td>{{ subject }}</td>
+              <td>{{ rank }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 여섯번째 줄 -->
+      <div>
+        <div>학교 홈페이지 : <a v-bind:href="universityData.website">{{ universityData.website }}</a></div>
+      </div>
+      <br />
+    </div>
+  </body>
 </template>
     
 
@@ -138,20 +139,20 @@ import RankChart from '../components/RankChart.vue'
 
 
 export default {
-    name: 'InfoPage',
-    components: {
-        RankChart,
-    },
-    props: ['data'],
+  name: 'InfoPage',
+  components: {
+    RankChart,
+  },
+  props: ['data'],
 
-    setup(props) {
-        const route = useRoute()
-        const universityData = ref(null)
-        const loading = ref(true)
-        const graph_source = ref('THE')
-        const subject_source = ref('THE')
-        const data =  {
-         "universities" : [
+  setup(props) {
+    const route = useRoute()
+    const universityData = ref(null)
+    const loading = ref(true)
+    const graph_source = ref('THE')
+    const subject_source = ref('THE')
+    const data = {
+      "universities": [
         {
           "website": "https://www.snu.ac.kr/",
           "citation": "https://www.snu.ac.kr/about/overview/vision",
@@ -6041,137 +6042,137 @@ export default {
           "id": 44
         }
       ]
-}
+    }
 
-        onBeforeMount(async () => {
-            try {
-                universityData.value = JSON.parse(props.data)
-            } catch (err) {
-                // await getData()  // 새로고침 누르면 다시 request 보냄
-                universityData.value = data.universities.filter(university => {
-                    return university.id.toString().includes(route.params.id)
-                })[0]
-            }
-            loading.value = false
-        })    
-
-
-        const getData = async () => {  // 클릭한 학교의 데이터만 가져오기
-            const res = await axios.get()
-            universityData.value = res.data.universities.filter(university => {
-                return university.name.includes(route.params.name)
-            })[0]
-        }
+    onBeforeMount(async () => {
+      try {
+        universityData.value = JSON.parse(props.data)
+      } catch (err) {
+        // await getData()  // 새로고침 누르면 다시 request 보냄
+        universityData.value = data.universities.filter(university => {
+          return university.id.toString().includes(route.params.id)
+        })[0]
+      }
+      loading.value = false
+    })
 
 
-        return {
-            loading,
-            universityData,
-            graph_source,
-            subject_source
-        }
-    },
+    const getData = async () => {  // 클릭한 학교의 데이터만 가져오기
+      const res = await axios.get()
+      universityData.value = res.data.universities.filter(university => {
+        return university.name.includes(route.params.name)
+      })[0]
+    }
+
+
+    return {
+      loading,
+      universityData,
+      graph_source,
+      subject_source
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .university-title {
+  display: flex;
+  height: 170px;
+  width: max-content;
+  padding: 20px 80px 20px 40px;
+  background: lightblue;
+  margin-bottom: 20px;
+
+  .university-logo {
+    padding-right: 40px;
+
+    img {
+      min-width: 80px;
+      max-height: 120px;
+    }
+  }
+
+  .university-name {
     display: flex;
-    height: 170px;
-    width: max-content;
-    padding: 20px 80px 20px 40px;
-    background: lightblue;
-    margin-bottom: 20px;
+    flex-direction: column;
+    justify-content: center;
 
-    .university-logo {
-        padding-right: 40px;
-        
-        img {
-            min-width: 80px;
-            max-height: 120px;
-        }
+    p {
+      @include korContentFont();
+      font-weight: bold;
+      padding: 5px 0;
+
+      &:nth-child(1) {
+        font-size: 2rem;
+      }
+
+      &:nth-child(2) {
+        font-size: 1.2rem;
+      }
     }
-
-    .university-name {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-        p {
-            @include korContentFont();
-            font-weight: bold;
-            padding: 5px 0;
-
-            &:nth-child(1) {
-                font-size: 2rem;
-            }
-
-            &:nth-child(2) {
-                font-size: 1.2rem;
-            }
-        }
-    }
+  }
 
 }
 
 .university-rank {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    width: max-content;
-    padding: 0 40px;
-    margin-bottom: 20px;
-    background: lightblue;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  width: max-content;
+  padding: 0 40px;
+  margin-bottom: 20px;
+  background: lightblue;
 }
 
 .graph-intro-wrapper {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    height: max-content;
-    background: white;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: max-content;
+  background: white;
 
-    .university-graph {
-        width: 48%;
+  .university-graph {
+    width: 48%;
 
-        .graph-btn-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 70px;
-            padding: 0 20px;
-            background: red;
+    .graph-btn-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+      padding: 0 20px;
+      background: red;
 
-            div {
-                display: flex;
+      div {
+        display: flex;
 
-                .source-btn {
-                    @extend %sourceBtn;
-                    width: 70px;
-                    height: 50px;
+        .source-btn {
+          @extend %sourceBtn;
+          width: 70px;
+          height: 50px;
 
-                    &:nth-child(1) {
-                        background: $theColor;
-                    }
+          &:nth-child(1) {
+            background: $theColor;
+          }
 
-                    &:nth-child(2) {
-                        background: $qsColor;
-                    }
-                }
-            }
+          &:nth-child(2) {
+            background: $qsColor;
+          }
         }
-
-        .graph {
-            height: 400px;
-            width: 100%;
-            background: lightblue;
-        }
+      }
     }
 
-    .university-intro {
-        width: 48%;
-        background: lightblue;
-
+    .graph {
+      height: 400px;
+      width: 100%;
+      background: lightblue;
     }
+  }
+
+  .university-intro {
+    width: 48%;
+    background: lightblue;
+
+  }
 }
 </style>
