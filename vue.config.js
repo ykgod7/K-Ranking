@@ -5,7 +5,8 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     allowedHosts: "all",
-    proxy: 'http://52.79.78.43:8081/'
+    proxy: 'http://k-ranking.co.kr/',
+    port: 8081,
     },
     changeOrigin: true,
   },
