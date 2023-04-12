@@ -7,7 +7,6 @@ module.exports = defineConfig({
     allowedHosts: "all",
     proxy: 'http://k-ranking.co.kr/',
     port: 8081,
-    },
     changeOrigin: true,
   },
   css: {
