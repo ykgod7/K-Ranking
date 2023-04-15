@@ -4,8 +4,12 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
-    allowedHosts: "all",
-    proxy: 'http://k-ranking.co.kr:8081/',
+    port: 8081,
+    proxy: {
+      '/': {
+        target: 'http://k-ranking.co.kr:8081/'
+      }
+    },
     changeOrigin: true,
   },
   css: {
