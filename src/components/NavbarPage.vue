@@ -115,7 +115,7 @@ export default {
 .navbar {
     @include centerElement();
     z-index: 10;
-    height: 254px;
+    height: 194px;
     background: white;
     position: sticky;
     top: 0;

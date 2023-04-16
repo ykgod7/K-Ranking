@@ -10,7 +10,6 @@ module.exports = defineConfig({
         target: 'http://k-ranking.co.kr:8081/'
       }
     },
-    changeOrigin: true,
   },
   css: {
     loaderOptions: {

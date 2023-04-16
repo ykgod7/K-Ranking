@@ -2,15 +2,25 @@
   <div v-if="loading"></div>
   <div class="container" v-else>
 
+    <div v-if="openModal" class="modal">
+      <div class="modal-content"></div>
+      <div class="modal-dim" @click="openModal = false"></div>
+    </div>
+
+    <div class="tot-num">
+      <span class="tot-num-title">총 {{ universities.length }}개 대학</span>
+      <p class="rank-criteria"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
+    </div>
+
     <!-- 대학교 리스트 -->
     <div class="top-bar-wrapper">
       <div class="inner-wrapper">
-        <div class="filter">순위<span class="material-icons-round icon">north</span></div>
-        <div class="filter">대학교명<span class="material-icons-round icon">north</span></div>
-        <div class="filter">입학 경쟁률<span class="material-icons-round icon">north</span></div>
-        <div class="filter">총 학생수<span class="material-icons-round icon">north</span></div>
-        <div class="filter">학생/교수 비율<span class="material-icons-round icon">north</span></div>
-        <div class="filter">등록금<span class="material-icons-round icon">north</span></div>
+        <div class="filter rank">순위<span class="material-icons-round icon">north</span></div>
+        <div class="filter name">대학교명<span class="material-icons-round icon">north</span></div>
+        <div class="filter comp">입학 경쟁률<span class="material-icons-round icon">north</span></div>
+        <div class="filter num">총 학생수<span class="material-icons-round icon">north</span></div>
+        <div class="filter sf-ratio">학생/교수 비율<span class="material-icons-round icon">north</span></div>
+        <div class="filter tuition">등록금<span class="material-icons-round icon">north</span></div>
       </div>
     </div>
 
@@ -18,7 +28,7 @@
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
         @click="detailPage(university)">
         <div class="inner-wrapper">
-          <div class="rank">{{ idx + 1 }}</div>
+          <div class="rank">{{ idx + 1 }}위</div>
           <div class="university">
             <img class="logo" :src="require(`../assets/logo/서울대학교.png`)" /> <!-- 이미지 파일 이름 수정 -->
             <div class="name">
@@ -28,9 +38,9 @@
           </div>
           <!-- 기타 정보 수정 -->
           <div class="compRate">13.7:1</div>
-          <div class="totStud">37125 명</div>
+          <div class="totStud">{{ addComma(37125) }} 명</div>
           <div class="SFRatio">27:1</div>
-          <div class="tuition">6001785 원</div>
+          <div class="tuition">{{ addComma(602123) }} 원</div>
         </div>
       </div>
     </div>
@@ -52,12 +62,17 @@ export default {
   name: 'MainPage',
   setup() {
     const router = useRouter()
+    const openModal = ref(false)
     const store = useStore()
     const loading = ref(true)
 
     const universities = computed(() => {
       return store.getters.filterUniversity
     })
+
+    const addComma = (val) => {
+      return val.toLocaleString();
+    }
 
 
 
@@ -90,24 +105,28 @@ export default {
     // })
 
     const detailPage = (data) => {
-      router.push({
-        name: 'Info',
-        params: {
-          id: data.id,
-          name: data.name,
-          data: JSON.stringify(data)
-        }
-      })
+
+      openModal.value = true
+      // router.push({
+      //   name: 'Info',
+      //   params: {
+      //     id: data.uni_id,
+      //     name: data.name,
+      //     data: JSON.stringify(data)
+      //   }
+      // })
     }
 
 
     return {
       detailPage,
+      addComma,
       universities,
       loading,
       sourceSvg,
       arrowDown,
       search,
+      openModal,
     }
   },
 }
@@ -123,25 +142,83 @@ export default {
 .container {
   background: #F5F5F5;
 
+  .modal {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
 
+    .modal-content {
+      z-index: 102;
+      width: 750px;
+      height: 900px;
+      background: white;
+    }
+
+    .modal-dim {
+      position: absolute;
+      z-index: 101;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .15);
+
+    }
+  }
+
+  .tot-num {
+    display: flex;
+    padding-top: 40px;
+    width: 944px;
+    margin: 0 auto;
+    
+    .tot-num-title {
+      font-weight: 700;
+      font-size: 24px;
+      color: #222222;
+      line-height: 29px;
+      margin-right: 12px;
+
+    }
+    
+    .rank-criteria {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      font-size: 16px;
+      color: #bababa;
+      line-height: 19px;
+
+      .icon {
+        font-size: 16px;
+        padding-right: 2px;
+      }
+    }
+  }
 
   .top-bar-wrapper {
     overflow: hidden;
     display: flex;
     align-items: flex-end;
     position: sticky;
-    top: 0;
+    top: -1px;
     width: 944px;
     margin: 0 auto;
     padding-bottom: 12px;
     background: #F5F5F5;
-    height: 110px;
+    padding-top: 44px;
 
     .inner-wrapper {
       position: relative;
       display: flex;
       justify-content: space-between;
-      width: 800px;
+      width: 850px;
 
       .filter {
         display: flex;
@@ -151,6 +228,31 @@ export default {
         font-size: 14px;
         color: #222222;
         line-height: 17px;
+
+        &.rank {
+          justify-content: center;
+          width: 65px;
+          .icon {
+            color: #FF7A00;
+          }
+        }
+
+        &.tuition {
+          justify-content: center;
+        }
+
+        &.comp {
+        }
+        &.name {
+          width: 250px;
+          .icon {
+            color: #82E1FF;
+          }
+        }
+
+        &.num {
+          justify-content: center;
+        }
 
         .icon {
           margin: 0 1px;
@@ -163,19 +265,12 @@ export default {
         }
 
         &:nth-child(1) {
-          width: 60px;
 
-          .icon {
-            color: #FF7A00;
-          }
+
         }
 
         &:nth-child(2) {
-          width: 240px;
 
-          .icon {
-            color: #82E1FF;
-          }
         }
 
         &:nth-child(3) {
@@ -201,7 +296,7 @@ export default {
 
   .university-container {
     width: 944px;
-    height: calc(100vh - 374px);
+    height: calc(100vh - 336px);
     margin: 0 auto;
 
     .university-wrapper {
@@ -217,12 +312,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 800px;
+        width: 850px;
         height: 100%;
 
         .rank {
           padding-left: 20px;
-          width: 60px;
+          width: 65px;
           font-family: 'pretendard';
           font-weight: 700;
           font-size: 16px;
@@ -232,7 +327,7 @@ export default {
 
         .university {
           display: flex;
-          width: 240px;
+          width: 250px;
 
           .logo {
             width: 40px;
@@ -271,6 +366,7 @@ export default {
           color: #222222;
           width: 80px;
           text-align: center;
+          text-indent: -20px;
         }
 
         .totStud {
