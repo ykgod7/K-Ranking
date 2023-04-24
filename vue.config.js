@@ -3,6 +3,9 @@ const { defineConfig } = require('@vue/cli-service')
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  devServer: {
+    proxy: 'https://k-ranking.co.kr:8081/'
+  },
   css: {
     loaderOptions: {
       sass: {
