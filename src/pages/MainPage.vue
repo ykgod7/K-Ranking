@@ -7,26 +7,29 @@
       <div class="modal-dim" @click="openModal = false"></div>
     </div>
 
-    <div class="tot-num">
-      <span class="tot-num-title">총 {{ universities.length }}개 대학</span>
-      <p class="rank-criteria"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
-    </div>
+    <div class="header">
+      <div class="tot-num">
+        <span class="tot-num-title">총 {{ universities.length }}개 대학</span>
+        <p class="rank-criteria"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
+      </div>
 
-    <!-- 대학교 리스트 -->
-    <div class="top-bar-wrapper">
-      <div class="inner-wrapper">
-        <div class="filter rank">순위<span class="material-icons-round icon">north</span></div>
-        <div class="filter name">대학교명<span class="material-icons-round icon">north</span></div>
-        <div class="filter comp">입학 경쟁률<span class="material-icons-round icon">north</span></div>
-        <div class="filter num">총 학생수<span class="material-icons-round icon">north</span></div>
-        <div class="filter sf-ratio">학생/교수 비율<span class="material-icons-round icon">north</span></div>
-        <div class="filter tuition">등록금<span class="material-icons-round icon">north</span></div>
+      <!-- 대학교 리스트 -->
+      <div class="top-bar-wrapper">
+        <div class="inner-wrapper">
+          <div class="filter rank">순위<span class="material-icons-round icon">north</span></div>
+          <div class="filter name">대학교명<span class="material-icons-round icon">north</span></div>
+          <div class="filter comp">입학 경쟁률<span class="material-icons-round icon">north</span></div>
+          <div class="filter num">총 학생수<span class="material-icons-round icon">north</span></div>
+          <div class="filter sf-ratio">학생/교수 비율<span class="material-icons-round icon">north</span></div>
+          <div class="filter tuition">등록금<span class="material-icons-round icon">north</span></div>
+        </div>
       </div>
     </div>
 
+
     <div class="university-container">
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
-        @click="detailPage(university)">
+        @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
           <div class="rank">{{ idx + 1 }}위</div>
           <div class="university">
@@ -56,6 +59,7 @@ import { useStore } from 'vuex'
 import sourceSvg from '@/assets/svg/source.svg'
 import arrowDown from '@/assets/svg/arrow_down.svg'
 import search from '@/assets/svg/search.svg'
+import axios from 'axios'
 
 
 export default {
@@ -104,8 +108,9 @@ export default {
     //     .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].rank < u2.source[selectedSource.value][selectedYear.value].rank ? -1 : 1)   // 리스트 sort
     // })
 
-    const detailPage = (data) => {
-
+    const detailPage = (id) => {
+      const res = axios.get(`http://k-ranking.co.kr:8081/api/universities/${id}`)
+      console.log(res.data)
       openModal.value = true
       // router.push({
       //   name: 'Info',
@@ -140,7 +145,10 @@ export default {
 }
 
 .container {
+  position: relative;
   background: #F5F5F5;
+  height: calc(100% - 194px);
+  overflow: hidden;
 
   .modal {
     position: fixed;
@@ -157,6 +165,7 @@ export default {
       z-index: 102;
       width: 750px;
       height: 900px;
+      border-radius: 20px;
       background: white;
     }
 
@@ -171,133 +180,141 @@ export default {
     }
   }
 
-  .tot-num {
-    display: flex;
-    padding-top: 40px;
-    width: 944px;
-    margin: 0 auto;
-    
-    .tot-num-title {
-      font-weight: 700;
-      font-size: 24px;
-      color: #222222;
-      line-height: 29px;
-      margin-right: 12px;
+  .header {
+    position: fixed;
+    top: 194px;
+    left: 50%;
+    transform: translateX(-50%);
 
-    }
-    
-    .rank-criteria {
-      cursor: pointer;
+    .tot-num {
+      background-color: #F5F5F5;
       display: flex;
-      align-items: center;
-      font-weight: 500;
-      font-size: 16px;
-      color: #bababa;
-      line-height: 19px;
+      padding-top: 40px;
+      width: 944px;
+      margin: 0 auto;
 
-      .icon {
-        font-size: 16px;
-        padding-right: 2px;
-      }
-    }
-  }
-
-  .top-bar-wrapper {
-    overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    position: sticky;
-    top: -1px;
-    width: 944px;
-    margin: 0 auto;
-    padding-bottom: 12px;
-    background: #F5F5F5;
-    padding-top: 44px;
-
-    .inner-wrapper {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      width: 850px;
-
-      .filter {
-        display: flex;
-        cursor: pointer;
-        font-family: 'pretendard';
-        font-weight: 500;
-        font-size: 14px;
+      .tot-num-title {
+        font-weight: 700;
+        font-size: 24px;
         color: #222222;
-        line-height: 17px;
+        line-height: 29px;
+        margin-right: 12px;
 
-        &.rank {
-          justify-content: center;
-          width: 65px;
-          .icon {
-            color: #FF7A00;
-          }
-        }
+      }
 
-        &.tuition {
-          justify-content: center;
-        }
-
-        &.comp {
-        }
-        &.name {
-          width: 250px;
-          .icon {
-            color: #82E1FF;
-          }
-        }
-
-        &.num {
-          justify-content: center;
-        }
+      .rank-criteria {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 16px;
+        color: #bababa;
+        line-height: 19px;
 
         .icon {
-          margin: 0 1px;
-          font-size: 13px;
+          font-size: 16px;
+          padding-right: 2px;
+        }
+      }
+    }
+
+    .top-bar-wrapper {
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      width: 944px;
+      margin: 0 auto;
+      padding-bottom: 12px;
+      background: #F5F5F5;
+      padding-top: 44px;
+
+      .inner-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        width: 850px;
+
+        .filter {
+          display: flex;
+          cursor: pointer;
+          font-family: 'pretendard';
+          font-weight: 500;
+          font-size: 14px;
           color: #222222;
+          line-height: 17px;
 
-          &.rotate {
-            transform: rotate(180deg);
+          &.rank {
+            justify-content: center;
+            width: 65px;
+
+            .icon {
+              color: #FF7A00;
+            }
           }
-        }
 
-        &:nth-child(1) {
+          &.tuition {
+            justify-content: center;
+          }
 
+          &.comp {}
 
-        }
+          &.name {
+            width: 250px;
 
-        &:nth-child(2) {
+            .icon {
+              color: #82E1FF;
+            }
+          }
 
-        }
+          &.num {
+            justify-content: center;
+          }
 
-        &:nth-child(3) {
-          width: 80px;
-        }
+          .icon {
+            margin: 0 1px;
+            font-size: 13px;
+            color: #222222;
 
-        &:nth-child(4) {
-          width: 80px;
-        }
+            &.rotate {
+              transform: rotate(180deg);
+            }
+          }
 
-        &:nth-child(5) {
-          width: 100px;
-        }
+          &:nth-child(1) {}
 
-        &:nth-child(6) {
-          width: 95px;
+          &:nth-child(2) {}
+
+          &:nth-child(3) {
+            width: 80px;
+          }
+
+          &:nth-child(4) {
+            width: 80px;
+          }
+
+          &:nth-child(5) {
+            width: 100px;
+          }
+
+          &:nth-child(6) {
+            width: 95px;
+          }
         }
       }
     }
   }
+
 
 
 
   .university-container {
+    padding-top: 142px;
     width: 944px;
-    height: calc(100vh - 336px);
+    display: flex;
+    flex-flow: column;
     margin: 0 auto;
+    overflow: auto;
+
 
     .university-wrapper {
       height: 80px;
