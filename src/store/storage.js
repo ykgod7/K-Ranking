@@ -10,6 +10,9 @@ export default createStore({
     },
     getters : {
         filterUniversity (state) {
+            if (state.universities.length < 1) {
+                return []
+            }
             return [...state.universities[0].filter(function(uni) {
                 return uni.rank.some(el => el.majorName === state.selectedMajor)
             })].sort((u1, u2) => {
