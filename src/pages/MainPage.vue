@@ -116,17 +116,17 @@
       <!-- 대학교 리스트 -->
       <div class="top-bar-wrapper">
         <div class="inner-wrapper">
-          <div class="filter rank" @click="filterState = 1"><span class="border"
+          <div class="filter rank" @click="changeFilterState(1)"><span class="border"
               :class="filterState === 1 ? 'isActive' : null">순위</span></div>
-          <div class="filter name" @click="filterState = 2"><span class="border name"
+          <div class="filter name" @click="changeFilterState(2)"><span class="border name"
               :class="filterState === 2 ? 'isActive' : null">학교명</span></div>
-          <div class="filter comp" @click="filterState = 3"><span class="border"
+          <div class="filter comp" @click="changeFilterState(3)"><span class="border"
               :class="filterState === 3 ? 'isActive' : null">입학 경쟁률</span></div>
-          <div class="filter num" @click="filterState = 4"><span class="border"
+          <div class="filter num" @click="changeFilterState(4)"><span class="border"
               :class="filterState === 4 ? 'isActive' : null">총 학생수</span></div>
-          <div class="filter sf-ratio" @click="filterState = 5"><span class="border"
+          <div class="filter sf-ratio" @click="changeFilterState(5)"><span class="border"
               :class="filterState === 5 ? 'isActive' : null">학생/교수 비율</span></div>
-          <div class="filter tuition" @click="filterState = 6"><span class="border"
+          <div class="filter tuition" @click="changeFilterState(6)"><span class="border"
               :class="filterState === 6 ? 'isActive' : null">평균 등록금</span></div>
         </div>
       </div>
@@ -158,9 +158,10 @@
 
 <script>
 
-import { ref, onBeforeMount, computed, watch } from 'vue'
+import { ref, onBeforeMount, computed, watch, reactive, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import JSCharting, { JSC } from 'jscharting-vue'
 
 import sourceSvg from '@/assets/svg/source.svg'
 import arrowDown from '@/assets/svg/arrow_down.svg'
@@ -175,7 +176,7 @@ export default {
     const openModal = ref(false)
     const store = useStore()
     const loading = ref(true)
-    const filterState = ref(null)
+    const filterState = ref('all')
     const majorDropdown = ref(false)
     const selectedMajor = ref('전체')
     const majors = ref(['경영학', '우주공학', '물리학', '화학', '생물학', '컴퓨터공학', '반도체', '신기술', '의학'])
@@ -186,6 +187,14 @@ export default {
 
     const addComma = (val) => {
       return val.toLocaleString();
+    }
+
+    const changeFilterState = (val) => {
+      if (filterState.value === val) {
+        filterState.value = 'all'
+      } else {
+        filterState.value = val
+      }
     }
 
     watch(openModal, (val) => {
@@ -226,8 +235,7 @@ export default {
 
     const detailPage = (id) => {
       const res = axios.get(`http://k-ranking.co.kr:8081/api/universities/${id}`)
-      console.log(res.data)
-      openModal.value = true
+        openModal.value = true
       // router.push({
       //   name: 'Info',
       //   params: {
@@ -251,7 +259,8 @@ export default {
       filterState,
       majors,
       majorDropdown,
-      selectedMajor
+      selectedMajor,
+      changeFilterState
     }
   },
 }
