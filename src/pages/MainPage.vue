@@ -161,7 +161,6 @@
 import { ref, onBeforeMount, computed, watch, reactive, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import JSCharting, { JSC } from 'jscharting-vue'
 
 import sourceSvg from '@/assets/svg/source.svg'
 import arrowDown from '@/assets/svg/arrow_down.svg'
