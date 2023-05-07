@@ -103,6 +103,7 @@
             </div>
           </div>
         </div>
+        <RankChart />
       </div>
       <div class="modal-dim" @click="openModal = false"></div>
     </div>
@@ -157,7 +158,7 @@
 </template>
 
 <script>
-
+import RankChart from '@/components/RankChart.vue'
 import { ref, onBeforeMount, computed, watch, reactive, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -170,6 +171,9 @@ import axios from 'axios'
 
 export default {
   name: 'MainPage',
+  components: {
+    RankChart
+  },
   setup() {
     const router = useRouter()
     const openModal = ref(false)
@@ -234,7 +238,7 @@ export default {
 
     const detailPage = (id) => {
       const res = axios.get(`http://k-ranking.co.kr:8081/api/universities/${id}`)
-        openModal.value = true
+      openModal.value = true
       // router.push({
       //   name: 'Info',
       //   params: {

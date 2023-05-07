@@ -1,5 +1,7 @@
 <template>
+  <div class="chart-wrapper">
     <LineChart :chartData="testData" class="chart" :options=options />
+  </div>
 </template>
 
 <script>
@@ -19,37 +21,42 @@ export default defineComponent({
     const qs_rank = ref([])
     const the_rank = ref([])
 
-
-    years.value = Object.keys(props.universityData.source.THE)  // 연도 데이터 [2020, 2021, 2022]
-
-    for (let i = 0; i < years.value.length; i++) {
-      the_rank.value.push(props.universityData.source.THE[years.value[i]].rank)  // 연도별 순위 담기
-      qs_rank.value.push(props.universityData.source.QS[years.value[i]].rank)
-    }
-
     const testData = {
-      labels: years.value,
+      labels: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035],
       datasets: [
         {
-          data: (props.graph_source == 'THE') ? the_rank.value : qs_rank.value,
-          backgroundColor: ['#00cc44'],
-          borderColor: ['#0d0d0d'],
+          label: 'ori',
+          data: [1, 3, 2, 2, 1, 1, 1, 3, 2, 2],
+          backgroundColor: ['#fff'],
+          borderColor: ['#00C2FF'],
           borderWidth: 1
         },
+        {
+          label: 'copy',
+          data: [4, 7, 6, 8, 4, 5],
+          backgroundColor: ['#fff'],
+          borderColor: ['#FF5C00'],
+          borderWidth: 1
+        }
       ],
     };
 
     const options = {
+      responsive: true,
+      maintainAspectRatio: true,
       plugins: {
         legend: {
-          display: false,
+          position: 'top',
+          
         },
+        title: {
+          display: false,
+          text: '테스트'
+        }
       },
       scales: {
         y: {
           reverse: true,
-          // min: 1,
-          // max: max.value + 5,
           ticks: {
             stepSize: 1
           }
@@ -64,10 +71,76 @@ export default defineComponent({
     };
   },
 });
+
+// export default defineComponent({
+//   name: 'RankChart',
+//   components: { LineChart },
+//   props: ['graph_source', 'universityData'],
+//   setup(props) {   
+//     const years = ref([])
+//     const qs_rank = ref([])
+//     const the_rank = ref([])
+
+
+//     years.value = Object.keys(props.universityData.source.THE)  // 연도 데이터 [2020, 2021, 2022]
+
+//     for (let i = 0; i < years.value.length; i++) {
+//       the_rank.value.push(props.universityData.source.THE[years.value[i]].rank)  // 연도별 순위 담기
+//       qs_rank.value.push(props.universityData.source.QS[years.value[i]].rank)
+//     }
+
+//     const testData = {
+//       labels: years.value,
+//       datasets: [
+//         {
+//           data: (props.graph_source == 'THE') ? the_rank.value : qs_rank.value,
+//           backgroundColor: ['#00cc44'],
+//           borderColor: ['#0d0d0d'],
+//           borderWidth: 1
+//         },
+//       ],
+//     };
+
+//     const options = {
+//       plugins: {
+//         legend: {
+//           display: false,
+//         },
+//       },
+//       scales: {
+//         y: {
+//           reverse: true,
+//           // min: 1,
+//           // max: max.value + 5,
+//           ticks: {
+//             stepSize: 1
+//           }
+//         }
+//       }
+//     };
+
+//     return { 
+//       testData, 
+//       options,
+ 
+//     };
+//   },
+// });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.chart-wrapper {
+}
 .chart {
+  padding-top: 14px;
   height: 300px;
+  overflow-x: scroll;
+
+}
+
+
+::v-deep {
+  #line-chart {
+  }
 }
 </style>
