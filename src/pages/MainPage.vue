@@ -296,7 +296,8 @@ export default {
     .modal-content {
       z-index: 102;
       width: 750px;
-      height: 900px;
+      height: 90vh;
+      overflow: scroll;
       border-radius: 20px;
       background: white;
       padding: 40px 40px 70px 40px;
@@ -617,7 +618,7 @@ export default {
       margin: 0 auto;
       padding-bottom: 12px;
       background: #F5F5F5;
-      padding-top: 44px;
+      padding-top: 32px;
 
       .inner-wrapper {
         position: relative;

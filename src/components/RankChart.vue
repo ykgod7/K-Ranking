@@ -25,15 +25,15 @@ export default defineComponent({
       labels: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035],
       datasets: [
         {
-          label: 'ori',
+          label: '국내 순위',
           data: [1, 3, 2, 2, 1, 1, 1, 3, 2, 2],
           backgroundColor: ['#fff'],
           borderColor: ['#00C2FF'],
           borderWidth: 1
         },
         {
-          label: 'copy',
-          data: [4, 7, 6, 8, 4, 5],
+          label: '글로벌 순위',
+          data: [101, 110, 120, 103, 85, 107, 140],
           backgroundColor: ['#fff'],
           borderColor: ['#FF5C00'],
           borderWidth: 1
@@ -56,11 +56,60 @@ export default defineComponent({
       },
       scales: {
         y: {
+          title: 'Income',
           reverse: true,
           ticks: {
-            stepSize: 1
+            stepSize: 1,
+
           }
-        }
+        },
+        yaxis: [
+              {
+                axisTicks: {
+                  show: true,
+                },
+                axisBorder: {
+                  show: true,
+                  color: '#008FFB'
+                },
+                labels: {
+                  style: {
+                    colors: '#008FFB',
+                  }
+                },
+                title: {
+                  text: "Income (thousand crores)",
+                  style: {
+                    color: '#008FFB',
+                  }
+                },
+                tooltip: {
+                  enabled: true
+                }
+              },
+              {
+                seriesName: 'Income',
+                opposite: true,
+                axisTicks: {
+                  show: true,
+                },
+                axisBorder: {
+                  show: true,
+                  color: '#00E396'
+                },
+                labels: {
+                  style: {
+                    colors: '#00E396',
+                  }
+                },
+                title: {
+                  text: "Operating Cashflow (thousand crores)",
+                  style: {
+                    color: '#00E396',
+                  }
+                },
+              },
+            ],
       }
     };
 
@@ -134,7 +183,6 @@ export default defineComponent({
 .chart {
   padding-top: 14px;
   height: 300px;
-  overflow-x: scroll;
 
 }
 
