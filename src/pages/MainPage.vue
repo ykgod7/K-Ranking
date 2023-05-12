@@ -134,7 +134,7 @@
     </div>
 
 
-    <div class="university-container">
+    <div class="university-container" :key="universities">
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
         @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
@@ -238,8 +238,11 @@ export default {
 
     const detailPage = (id) => {
       const res = axios.get(`https://k-ranking.co.kr:8081/api/universities/${id}`)
+      .then(response => {
+        console.log(response)
+
+      })
       openModal.value = true
-      console.log(res.data)
       // router.push({
       //   name: 'Info',
       //   params: {
@@ -278,6 +281,7 @@ export default {
 }
 
 .container {
+  min-height: calc(100vh - 194px);
   position: relative;
   background: #F5F5F5;
   height: calc(100% - 194px);

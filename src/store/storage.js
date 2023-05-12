@@ -3,16 +3,26 @@ import { createStore } from "vuex";
 export default createStore({
     state : {
         universities : [],
+        searchedUniversity : [],
         majors : [],
         years : [],
         selectedMajor : 'Universities',
-        selectedYear : 2022
+        inputText : ''
     },
     getters : {
         filterUniversity (state) {
+            // Data 없을 때
             if (state.universities.length < 1) {
                 return []
             }
+
+            // Data 있을 때
+            // 학교 이름 검색 시
+            if (state.inputText) {
+                return [...state.universities[0].filter(uni => uni.name.includes(state.inputText))]
+            }
+
+            // 그 외
             return [...state.universities[0].filter(function(uni) {
                 return uni.rank.some(el => el.majorName === state.selectedMajor)
             })].sort((u1, u2) => {
@@ -34,10 +44,20 @@ export default createStore({
                 return u1.rank[idx1].totRank - u2.rank[idx2].totRank
             })
         },
+        searchUniversity (state, value) {
+            if (value) {
+                console.log(state.universities[0])
+            }
+        }
     },
     mutations : {
+        // 연도 바뀔 때와 처음 화면 뜰 때
         setUniversities(state, value){
-            state.universities.push(value);
+            if (state.universities) {
+                state.universities[0] = value
+            } else {
+                state.universities.push(value);
+            }
         },
 
         setMajors(state, value) {
@@ -48,12 +68,11 @@ export default createStore({
             state.years.push(value)
         },
 
-        choosMajor (state, value) {
+        chooseMajor (state, value) {
             state.selectedMajor = value
         },
-
-        chooseYear (state, value) {
-            state.selectedYear = value
-        }
+        setInputText (state, value) {
+            state.inputText = value
+        },
     },
 });

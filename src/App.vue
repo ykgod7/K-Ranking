@@ -9090,11 +9090,10 @@ export default {
         }
 
         const getData = async () => {
-            const res = await axios.get('https://k-ranking.co.kr:8081/api/universities')
+            let res = await axios.get('https://k-ranking.co.kr:8081/api/universities')
             store.commit('setUniversities', res.data.universities)
             store.commit('setMajors', res.data.majors)
             store.commit('setYears', [2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009])
-
         }
 
         onBeforeMount(async () => {
@@ -9105,8 +9104,11 @@ export default {
 
         })
 
-        // 연도 변경시 데이터 요청
-        watchEffect(() => console.log(store.state.selectedYear))
+        // // 연도 변경시 데이터 요청
+        // watchEffect(() => {
+        //     getData(store.state.selectedYear)
+        //     // console.log(store.state.selectedYear)
+        // })
 
     }
 }
