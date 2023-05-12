@@ -29,14 +29,16 @@ export default defineComponent({
           data: [1, 3, 2, 2, 1, 1, 1, 3, 2, 2],
           backgroundColor: ['#fff'],
           borderColor: ['#00C2FF'],
-          borderWidth: 1
+          borderWidth: 1,
+          yAxisID: 'domestic'
         },
         {
           label: '글로벌 순위',
           data: [101, 110, 120, 103, 85, 107, 140],
           backgroundColor: ['#fff'],
           borderColor: ['#FF5C00'],
-          borderWidth: 1
+          borderWidth: 1,
+          yAxisID: 'global'
         }
       ],
     };
@@ -55,61 +57,23 @@ export default defineComponent({
         }
       },
       scales: {
-        y: {
-          title: 'Income',
+        domestic: {
           reverse: true,
+          type: 'linear',
+          position: 'left',
           ticks: {
             stepSize: 1,
-
+          },
+          grid: {
+            drawOnChartArea: false
           }
         },
-        yaxis: [
-              {
-                axisTicks: {
-                  show: true,
-                },
-                axisBorder: {
-                  show: true,
-                  color: '#008FFB'
-                },
-                labels: {
-                  style: {
-                    colors: '#008FFB',
-                  }
-                },
-                title: {
-                  text: "Income (thousand crores)",
-                  style: {
-                    color: '#008FFB',
-                  }
-                },
-                tooltip: {
-                  enabled: true
-                }
-              },
-              {
-                seriesName: 'Income',
-                opposite: true,
-                axisTicks: {
-                  show: true,
-                },
-                axisBorder: {
-                  show: true,
-                  color: '#00E396'
-                },
-                labels: {
-                  style: {
-                    colors: '#00E396',
-                  }
-                },
-                title: {
-                  text: "Operating Cashflow (thousand crores)",
-                  style: {
-                    color: '#00E396',
-                  }
-                },
-              },
-            ],
+        global: {
+          beginAtZero: true,
+          type: 'linear',
+          position: 'right',
+
+        }
       }
     };
 

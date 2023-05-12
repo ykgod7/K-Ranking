@@ -239,6 +239,7 @@ export default {
     const detailPage = (id) => {
       const res = axios.get(`http://k-ranking.co.kr:8081/api/universities/${id}`)
       openModal.value = true
+      console.log(res.data)
       // router.push({
       //   name: 'Info',
       //   params: {
