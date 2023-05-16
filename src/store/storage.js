@@ -6,7 +6,7 @@ export default createStore({
         searchedUniversity : [],
         majors : [],
         years : [],
-        selectedMajor : 'Universities',
+        selectedMajor : '전체',
         inputText : ''
     },
     getters : {
@@ -24,30 +24,25 @@ export default createStore({
 
             // 그 외
             return [...state.universities[0].filter(function(uni) {
-                return uni.rank.some(el => el.majorName === state.selectedMajor)
+                return uni.rank.some(el => el.korName === state.selectedMajor)
             })].sort((u1, u2) => {
                 let idx1 = 0
                 let idx2 = 0
 
                 for (let i=0; i<u1.rank.length; i++) {
-                    if (u1.rank[i].majorName === state.selectedMajor) {
+                    if (u1.rank[i].korName === state.selectedMajor) {
                         idx1 = i
                     }
                 }
 
                 for (let j=0; j<u2.rank.length; j++) {
-                    if (u2.rank[j].majorName === state.selectedMajor) {
+                    if (u2.rank[j].korName === state.selectedMajor) {
                         idx2 = j
                     }
                 }
 
                 return u1.rank[idx1].totRank - u2.rank[idx2].totRank
             })
-        },
-        searchUniversity (state, value) {
-            if (value) {
-                console.log(state.universities[0])
-            }
         }
     },
     mutations : {

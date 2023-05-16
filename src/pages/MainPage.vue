@@ -109,9 +109,13 @@
     </div>
 
     <div class="header">
-      <div class="tot-num">
+      <div class="tot-num" >
         <span class="tot-num-title">총 {{ universities.length }}개 대학</span>
-        <p class="rank-criteria"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
+        <p class="rank-criteria" @click="openTooltip"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
+        <div  v-if="tooltipState" class="tooltip">
+          <p>대학교 순위는 이 웹사이트(링크  : 클릭시 이동)의 데이터를 기준으로 만들어졌습니다. 순위는 연구 분야(50%), 혁신 분야(30%), 사회 분야(20%)를 기준으로 매겨졌으며 기준에 대한 자세한 내용은 웹사이트(링크 : 클릭시 이동)에서 확인할 수 있습니다.</p>
+          <div class="tooltip-close" @click="tooltipState = false">x</div>
+        </div>
       </div>
 
       <!-- 대학교 리스트 -->
@@ -135,6 +139,7 @@
 
 
     <div class="university-container" :key="universities">
+      <div v-if="universities.length < 1" class="no-data">관련된 데이터가 없습니다</div>
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
         @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
@@ -147,10 +152,10 @@
             </div>
           </div>
           <!-- 기타 정보 수정 -->
-          <div class="compRate">13.7:1</div>
-          <div class="totStud">{{ addComma(37125) }} 명</div>
-          <div class="SFRatio">27:1</div>
-          <div class="tuition">{{ addComma(602123) }} 원</div>
+          <div class="compRate">{{ university.compRate }}</div>
+          <div class="totStud">{{ addComma(university.totStud) }} 명</div>
+          <div class="SFRatio">{{ university.sfratio }}</div>
+          <div class="tuition">{{ addComma(university.tuition) }} 원</div>
         </div>
       </div>
     </div>
@@ -179,6 +184,7 @@ export default {
     const openModal = ref(false)
     const store = useStore()
     const loading = ref(true)
+    const tooltipState = ref(false)
     const filterState = ref('all')
     const majorDropdown = ref(false)
     const selectedMajor = ref('전체')
@@ -189,7 +195,11 @@ export default {
     })
 
     const addComma = (val) => {
-      return val.toLocaleString();
+      return val.toLocaleString()
+    }
+
+    const openTooltip = () => {
+      tooltipState.value = true
     }
 
     const changeFilterState = (val) => {
@@ -211,30 +221,6 @@ export default {
     onBeforeMount(() => {
       loading.value = false
     })
-
-    // const getData = async () => {
-    //   const res = await axios.get()
-    //   universities.value = res.data
-    //   years.value = Object.keys(res.data[0].source.QS).sort((y1, y2) => y1 > y2 ? -1 : 1)
-    //   loading.value = false
-    // }
-
-    // const filteredUniversity = computed(() => {
-    //   if (searchUniversity.value) {
-    //     return universities.value.filter(university => {  //  대학교 이름 검색 시
-    //       return university.name.includes(searchUniversity.value)
-    //     })
-    //   }
-
-    //   if (selectedSubject.value) {   // 학과 검색 시
-    //     return [...universities.value.filter(university => { return university.source[selectedSource.value][selectedYear.value] })]
-    //       .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].subject[selectedSubject.value] < u2.source[selectedSource.value][selectedYear.value].subject[selectedSubject.value])
-    //   }
-
-    //   // 그 외
-    //   return [...universities.value.filter(university => { return university.source[selectedSource.value][selectedYear.value] })]  // 해당 연도 데이터 없는 리스트 제거
-    //     .sort((u1, u2) => u1.source[selectedSource.value][selectedYear.value].rank < u2.source[selectedSource.value][selectedYear.value].rank ? -1 : 1)   // 리스트 sort
-    // })
 
     const detailPage = (id) => {
       const res = axios.get(`https://k-ranking.co.kr:8081/api/universities/${id}`)
@@ -267,7 +253,9 @@ export default {
       majors,
       majorDropdown,
       selectedMajor,
-      changeFilterState
+      changeFilterState,
+      openTooltip,
+      tooltipState
     }
   },
 }
@@ -585,6 +573,7 @@ export default {
 
     .tot-num {
       background-color: #F5F5F5;
+      position: relative;
       display: flex;
       padding-top: 40px;
       width: 944px;
@@ -611,6 +600,25 @@ export default {
         .icon {
           font-size: 16px;
           padding-right: 2px;
+        }
+      }
+
+      .tooltip {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 500px;
+        padding-right: 20px;
+        height: 70px;
+        border: 1px solid gray;
+        border-radius: 5px;
+
+        .tooltip-close {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          right: 5px;
+        
         }
       }
     }
