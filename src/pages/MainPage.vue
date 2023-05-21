@@ -113,8 +113,8 @@
         <span class="tot-num-title">총 {{ universities.length }}개 대학</span>
         <p class="rank-criteria" @click="openTooltip"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
         <div  v-if="tooltipState" class="tooltip">
-          <p>대학교 순위는 이 웹사이트(링크  : 클릭시 이동)의 데이터를 기준으로 만들어졌습니다. 순위는 연구 분야(50%), 혁신 분야(30%), 사회 분야(20%)를 기준으로 매겨졌으며 기준에 대한 자세한 내용은 웹사이트(링크 : 클릭시 이동)에서 확인할 수 있습니다.</p>
-          <div class="tooltip-close" @click="tooltipState = false">x</div>
+          <p>대학교 순위는 <a href="https://www.scimagoir.com/rankings.php?sector=Higher+educ.&country=KOR&ranking=Overall&area=3400" target="_blank"><u>www.scimagoir.com</u></a>의 데이터를 기준으로 만들어졌습니다. 기준에 대한 자세한 내용은 <a href="https://www.scimagoir.com/methodology.php" target="_blank"><u>링크</u></a>에서 확인할 수 있습니다.</p>
+          <span class="tooltip-close material-icons-outlined icon" @click="tooltipState = false">close</span>
         </div>
       </div>
 
@@ -122,26 +122,25 @@
       <div class="top-bar-wrapper">
         <div class="inner-wrapper">
           <div class="filter rank" @click="changeFilterState(1)"><span class="border"
-              :class="filterState === 1 ? 'isActive' : null">순위</span></div>
+              :class="$store.state.sortValue === 1 ? 'isActive' : null">순위</span></div>
           <div class="filter name" @click="changeFilterState(2)"><span class="border name"
-              :class="filterState === 2 ? 'isActive' : null">학교명</span></div>
+              :class="$store.state.sortValue === 2 ? 'isActive' : null">학교명</span></div>
           <div class="filter comp" @click="changeFilterState(3)"><span class="border"
-              :class="filterState === 3 ? 'isActive' : null">입학 경쟁률</span></div>
+              :class="$store.state.sortValue === 3 ? 'isActive' : null">입학 경쟁률</span></div>
           <div class="filter num" @click="changeFilterState(4)"><span class="border"
-              :class="filterState === 4 ? 'isActive' : null">총 학생수</span></div>
+              :class="$store.state.sortValue === 4 ? 'isActive' : null">총 학생수</span></div>
           <div class="filter sf-ratio" @click="changeFilterState(5)"><span class="border"
-              :class="filterState === 5 ? 'isActive' : null">학생/교수 비율</span></div>
+              :class="$store.state.sortValue === 5 ? 'isActive' : null">학생/교수 비율</span></div>
           <div class="filter tuition" @click="changeFilterState(6)"><span class="border"
-              :class="filterState === 6 ? 'isActive' : null">평균 등록금</span></div>
+              :class="$store.state.sortValue === 6 ? 'isActive' : null">평균 등록금</span></div>
         </div>
       </div>
     </div>
 
-
     <div class="university-container" :key="universities">
       <div v-if="universities.length < 1" class="no-data">관련된 데이터가 없습니다</div>
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
-        @click="detailPage(university.uni_id)">
+      @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
           <div class="rank">{{ idx + 1 }}위</div>
           <div class="university">
@@ -185,7 +184,6 @@ export default {
     const store = useStore()
     const loading = ref(true)
     const tooltipState = ref(false)
-    const filterState = ref('all')
     const majorDropdown = ref(false)
     const selectedMajor = ref('전체')
     const majors = ref(['경영학', '우주공학', '물리학', '화학', '생물학', '컴퓨터공학', '반도체', '신기술', '의학'])
@@ -203,10 +201,10 @@ export default {
     }
 
     const changeFilterState = (val) => {
-      if (filterState.value === val) {
-        filterState.value = 'all'
+      if (store.state.sortValue === val) {
+        store.commit('setSortValue', '')
       } else {
-        filterState.value = val
+        store.commit('setSortValue', val)
       }
     }
 
@@ -249,7 +247,6 @@ export default {
       arrowDown,
       search,
       openModal,
-      filterState,
       majors,
       majorDropdown,
       selectedMajor,
@@ -271,7 +268,7 @@ export default {
 .container {
   min-height: calc(100vh - 194px);
   position: relative;
-  background: #F5F5F5;
+  background: #F6FBFF;
   height: calc(100% - 194px);
   overflow: hidden;
 
@@ -569,15 +566,16 @@ export default {
     position: fixed;
     top: 194px;
     left: 50%;
+    z-index: 1;
     transform: translateX(-50%);
 
     .tot-num {
-      background-color: #F5F5F5;
       position: relative;
       display: flex;
       padding-top: 40px;
       width: 944px;
       margin: 0 auto;
+      background: #F6FBFF;
 
       .tot-num-title {
         font-weight: 700;
@@ -605,20 +603,37 @@ export default {
 
       .tooltip {
         position: absolute;
-        top: 0;
-        left: 50%;
+        top: 25px;
+        left: 277px;
         width: 500px;
-        padding-right: 20px;
-        height: 70px;
-        border: 1px solid gray;
+        padding: 10px 15px;
         border-radius: 5px;
+        background: #f2f2f2;
+
+        p {
+          color: #bababa;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 17px;
+
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: -28px;
+          top: 15px;
+          border: 15px solid;
+          transform: rotate(90deg);
+          border-color: #f2f2f2 #0000 #0000 #0000;
+        }
 
         .tooltip-close {
           position: absolute;
           cursor: pointer;
-          top: 0;
+          top: 3px;
           right: 5px;
-        
+          font-size: 19px;
         }
       }
     }
@@ -630,7 +645,7 @@ export default {
       width: 944px;
       margin: 0 auto;
       padding-bottom: 12px;
-      background: #F5F5F5;
+      background: #F6FBFF;
       padding-top: 32px;
 
       .inner-wrapper {
@@ -657,13 +672,17 @@ export default {
             border: 1px solid #F2F2F2;
             border-radius: 4px;
 
-            &.isActive::before {
-              position: absolute;
-              content: url('@/assets/images/Component11.png');
-              top: 7px;
-              right: 10px;
-              width: 10px;
-              height: 11px;
+            &.isActive {
+              border: 1px solid #00C2FF;
+
+              &::before {
+                position: absolute;
+                content: url('@/assets/images/Component11.png');
+                top: 7px;
+                right: 10px;
+                width: 10px;
+                height: 11px;
+              }
             }
 
             &::before {
@@ -766,6 +785,7 @@ export default {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            max-width: 220px;
 
             .name-korean {
               font-family: 'pretendard';

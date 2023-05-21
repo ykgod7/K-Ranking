@@ -72,7 +72,6 @@ export default defineComponent({
           beginAtZero: true,
           type: 'linear',
           position: 'right',
-
         }
       }
     };

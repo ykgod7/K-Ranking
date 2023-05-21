@@ -7,19 +7,79 @@ export default createStore({
         majors : [],
         years : [],
         selectedMajor : '전체',
-        inputText : ''
+        inputText : '',
+        sortValue: ''
     },
     getters : {
         filterUniversity (state) {
-            // Data 없을 때
+            // ***Data 없을 때***
             if (state.universities.length < 1) {
                 return []
             }
 
-            // Data 있을 때
+            // ***Data 있을 때***
             // 학교 이름 검색 시
+            
             if (state.inputText) {
                 return [...state.universities[0].filter(uni => uni.name.includes(state.inputText))]
+            }
+            console.log(state.universities[0].length)
+            // 학교 리스트 정렬 시
+            if (state.sortValue) {
+                let filteredList = [...state.universities[0].filter(function(uni) {
+                    return uni.rank.some(el => el.korName === state.selectedMajor)
+                })]
+                // 순위 정렬
+                if (state.sortValue === 1) {
+                    return filteredList.sort((u1, u2) => {
+                        let idx1 = 0
+                        let idx2 = 0
+
+                        for (let i=0; i<u1.rank.length; i++) {
+                            if (u1.rank[i].majorName === 'Universities') {
+                                idx1 = i
+                            }
+                        }
+        
+                        for (let j=0; j<u2.rank.length; j++) {
+                            if (u2.rank[j].majorName === 'Universities') {
+                                idx2 = j
+                            }
+                        }
+
+                        return u2.rank[idx2].totRank - u1.rank[idx1].totRank
+                    })
+                } 
+                // 이름 정렬
+                else if (state.sortValue === 2) {
+                    return filteredList.sort((u1, u2) => {
+                        return new Intl.Collator().compare(u1.name, u2.name);
+                    })
+                }
+                // 경쟁률 정렬
+                else if (state.sortValue === 3) {
+                    return filteredList.sort((u1, u2) => {
+                        return u2.compRate - u1.compRate
+                    })
+                }
+                // 학생수 정렬
+                else if (state.sortValue === 4) {
+                    return filteredList.sort((u1, u2) => {
+                        return u2.totStud - u1.totStud
+                    })
+                }
+                // 학생/교수 정렬
+                else if (state.sortValue === 5) {
+                    return filteredList.sort((u1, u2) => {
+                        return u2.sfratio - u1.sfratio
+                    })
+                }
+                // 등록금 정렬
+                else if (state.sortValue === 6) {
+                    return filteredList.sort((u1, u2) => {
+                        return u2.tuition - u1.tuition
+                    })
+                }
             }
 
             // 그 외
@@ -69,5 +129,8 @@ export default createStore({
         setInputText (state, value) {
             state.inputText = value
         },
+        setSortValue (state, value) {
+            state.sortValue = value
+        }
     },
 });
