@@ -111,12 +111,16 @@
     <div class="header">
       <div class="tot-num" >
         <span class="tot-num-title">총 {{ universities.length }}개 대학</span>
-        <p class="rank-criteria" @click="openTooltip"><span class="material-icons-outlined icon">error</span>순위 기준 안내</p>
-        <div  v-if="tooltipState" class="tooltip">
-          <p>대학교 순위는 <a href="https://www.scimagoir.com/rankings.php?sector=Higher+educ.&country=KOR&ranking=Overall&area=3400" target="_blank"><u>www.scimagoir.com</u></a>의 데이터를 기준으로 만들어졌습니다. 기준에 대한 자세한 내용은 <a href="https://www.scimagoir.com/methodology.php" target="_blank"><u>링크</u></a>에서 확인할 수 있습니다.</p>
-          <span class="tooltip-close material-icons-outlined icon" @click="tooltipState = false">close</span>
+        <p 
+        @mouseover="tooltipState = true"
+        @mouseout="tooltipState = false"
+        class="rank-criteria"><img class="icon" src="@/assets/images/caution.png">순위 기준 안내</p>
+        <div :class="tooltipState ? 'show' : null" class="tooltip">
+          <p>대학교 순위는 <u>www.scimagoir.com</u>의 데이터를 기준으로 만들어졌습니다.</p>
         </div>
       </div>
+
+      <div class="filter-wrapper"></div>
 
       <!-- 대학교 리스트 -->
       <div class="top-bar-wrapper">
@@ -142,9 +146,9 @@
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
       @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
-          <div class="rank">{{ idx + 1 }}위</div>
+          <div class="rank">{{ university.totRank}}위</div>
           <div class="university">
-            <img class="logo" :src="require(`../assets/logo/서울대학교.png`)" /> <!-- 이미지 파일 이름 수정 -->
+            <img class="logo" src="//i.namu.wiki/i/jUjHSBpWxH8BBJb9IQslMF6pjVf1IGeWVfe5vT2zZPONBMSNiZ4y2TkNhc17RxG7RliANtIZKA9kA5mjIVdJft77jv1uXOcbrlFYnjgNJYD4y1q4HY8GxFN8gfSAyfUDL1DEaQEVoRcosLIZ2_70pA.svg" /> <!-- 이미지 파일 이름 수정 -->
             <div class="name">
               <p class="name-korean">{{ university.name }}</p>
               <p class="name-english">{{ university.engName }}</p>
@@ -180,10 +184,10 @@ export default {
   },
   setup() {
     const router = useRouter()
+    const tooltipState = ref(false)
     const openModal = ref(false)
     const store = useStore()
     const loading = ref(true)
-    const tooltipState = ref(false)
     const majorDropdown = ref(false)
     const selectedMajor = ref('전체')
     const majors = ref(['경영학', '우주공학', '물리학', '화학', '생물학', '컴퓨터공학', '반도체', '신기술', '의학'])
@@ -196,9 +200,6 @@ export default {
       return val.toLocaleString()
     }
 
-    const openTooltip = () => {
-      tooltipState.value = true
-    }
 
     const changeFilterState = (val) => {
       if (store.state.sortValue === val) {
@@ -251,7 +252,6 @@ export default {
       majorDropdown,
       selectedMajor,
       changeFilterState,
-      openTooltip,
       tooltipState
     }
   },
@@ -267,10 +267,10 @@ export default {
 
 .container {
   min-height: calc(100vh - 194px);
+  width: 944px;
+  margin: 0 auto;
+  padding-top: 66px;
   position: relative;
-  background: #F6FBFF;
-  height: calc(100% - 194px);
-  overflow: hidden;
 
   .modal {
     position: fixed;
@@ -563,17 +563,14 @@ export default {
   }
 
   .header {
-    position: fixed;
-    top: 194px;
-    left: 50%;
-    z-index: 1;
-    transform: translateX(-50%);
+    position: -webkit-sticky;
+    position: sticky;
+    top: 66px;
 
     .tot-num {
       position: relative;
       display: flex;
-      padding-top: 40px;
-      width: 944px;
+      padding-top: 30px;
       margin: 0 auto;
       background: #F6FBFF;
 
@@ -596,16 +593,19 @@ export default {
         line-height: 19px;
 
         .icon {
-          font-size: 16px;
+          width: 23px;
           padding-right: 2px;
+          filter: invert(50%);
         }
       }
 
       .tooltip {
+        opacity: 0;
+        transition: 0.4s opacity;
         position: absolute;
-        top: 25px;
+        top: 23px;
         left: 277px;
-        width: 500px;
+        height: 40px;
         padding: 10px 15px;
         border-radius: 5px;
         background: #f2f2f2;
@@ -618,24 +618,25 @@ export default {
 
         }
 
+        &.show {
+          opacity: 1;
+        }
+
         &::before {
           content: '';
           position: absolute;
           left: -28px;
-          top: 15px;
+          top: 6px;
           border: 15px solid;
           transform: rotate(90deg);
           border-color: #f2f2f2 #0000 #0000 #0000;
         }
-
-        .tooltip-close {
-          position: absolute;
-          cursor: pointer;
-          top: 3px;
-          right: 5px;
-          font-size: 19px;
-        }
       }
+    }
+
+    .filter-wrapper {
+      padding-top: 10px;
+      height: 26px;
     }
 
     .top-bar-wrapper {
@@ -646,7 +647,7 @@ export default {
       margin: 0 auto;
       padding-bottom: 12px;
       background: #F6FBFF;
-      padding-top: 32px;
+      padding-top: 26px;
 
       .inner-wrapper {
         position: relative;
@@ -737,8 +738,6 @@ export default {
 
 
   .university-container {
-    padding-top: 142px;
-    width: 944px;
     display: flex;
     flex-flow: column;
     margin: 0 auto;

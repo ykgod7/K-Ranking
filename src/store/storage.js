@@ -23,7 +23,7 @@ export default createStore({
             if (state.inputText) {
                 return [...state.universities[0].filter(uni => uni.name.includes(state.inputText))]
             }
-            console.log(state.universities[0].length)
+            console.log(state.universities[0])
             // 학교 리스트 정렬 시
             if (state.sortValue) {
                 let filteredList = [...state.universities[0].filter(function(uni) {

@@ -41,8 +41,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-    width: 100%;
-    overflow-x: hidden;
     font-family: 'pretendard';
+    background: #F6FBFF;
 }
 </style>

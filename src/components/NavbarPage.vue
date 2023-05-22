@@ -16,8 +16,7 @@
         </div>
       </div>
 
-      <div class="row-2">
-        <!-- 연도 필터 -->
+      <!-- <div class="row-2">
         <div class="year-filter">
           <div class="filter-name">년도</div>
           <div class="year-dropdown" @click="yearDropdown = !yearDropdown">
@@ -38,7 +37,6 @@
           </div>
         </div>
 
-        <!-- 학과 필터 -->
         <div class="subject-filter">
           <div class="filter-name">학부/학과명</div>
           <div
@@ -72,7 +70,7 @@
             <span class="material-icons-round icon">search</span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </nav>
 </template>
@@ -144,15 +142,17 @@ export default {
 .navbar {
   @include centerElement();
   z-index: 10;
-  height: 194px;
+  height: 66px;
   background: white;
-  position: sticky;
+  position: fixed;
+  width: 100vw;
   top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   transition: all 0.2s ease;
   border-bottom: 1px solid #f2f2f2;
 
   .navbar-wrapper {
-    height: 100%;
     width: 944px;
 
     .row-1 {
@@ -173,9 +173,12 @@ export default {
           height: 100%;
 
           p {
-            color: $mainColor;
+            color: white;
             font-weight: bold;
-            font-size: 2.5rem;
+            font-size: 1.5rem;
+            background: #00C2FF;
+            border-radius: 4px;
+            padding: 10px;
           }
         }
       }
