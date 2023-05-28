@@ -120,7 +120,30 @@
         </div>
       </div>
 
-      <div class="filter-wrapper"></div>
+      <div class="filter-wrapper" v-click-outside="onClickOutside">
+        <div class="year-filter" 
+          @click="openFilter(1)">
+          <span>2023</span>
+          <span v-if="filterState === 1" class="material-icons-round icon">expand_less</span>
+          <span v-else class="material-icons-round icon">expand_more</span>
+          <!-- <img src="@/assets/images/filter_arrow_white.png" :class="filterState === 1 ? 'opened' : 'closed'" alt="" /> -->
+          <div class="dropdown-wrapper" :class="filterState === 1 ? 'is-show' : null">
+
+          </div>
+        </div>
+        <div class="major-filter" @click="openFilter(2)">
+          <span>학과명</span>
+          <span v-if="filterState === 2" class="material-icons-round icon">expand_less</span>
+          <span v-else class="material-icons-round icon">expand_more</span>
+          <div class="dropdown-wrapper" :class="filterState === 2 ? 'is-show' : null">
+
+          </div>
+        </div>
+        <div class="university-search" @click="filterState = 0">
+          <input class="search-input" placeholder="학교를 검색해보세요." v-model="searchInput" />
+          <span class="material-icons-round icon">search</span>
+        </div>
+      </div>
 
       <!-- 대학교 리스트 -->
       <div class="top-bar-wrapper">
@@ -170,6 +193,7 @@ import RankChart from '@/components/RankChart.vue'
 import { ref, onBeforeMount, computed, watch, reactive, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import vClickOutside from 'click-outside-vue3'
 
 import sourceSvg from '@/assets/svg/source.svg'
 import arrowDown from '@/assets/svg/arrow_down.svg'
@@ -182,6 +206,9 @@ export default {
   components: {
     RankChart
   },
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
   setup() {
     const router = useRouter()
     const tooltipState = ref(false)
@@ -190,6 +217,7 @@ export default {
     const loading = ref(true)
     const majorDropdown = ref(false)
     const selectedMajor = ref('전체')
+    const filterState = ref(0)
     const majors = ref(['경영학', '우주공학', '물리학', '화학', '생물학', '컴퓨터공학', '반도체', '신기술', '의학'])
 
     const universities = computed(() => {
@@ -199,7 +227,6 @@ export default {
     const addComma = (val) => {
       return val.toLocaleString()
     }
-
 
     const changeFilterState = (val) => {
       if (store.state.sortValue === val) {
@@ -238,10 +265,20 @@ export default {
       // })
     }
 
+    const openFilter = (val) => {
+      if (filterState.value === val) {
+        filterState.value = 0
+      } else {
+        filterState.value = val
+      }
+    }
+
+    const onClickOutside = (event) => {
+      filterState.value = 0
+    }
+
 
     return {
-      detailPage,
-      addComma,
       universities,
       loading,
       sourceSvg,
@@ -251,8 +288,13 @@ export default {
       majors,
       majorDropdown,
       selectedMajor,
+      tooltipState,
+      filterState,
+      detailPage,
+      addComma,
       changeFilterState,
-      tooltipState
+      openFilter,
+      onClickOutside,
     }
   },
 }
@@ -412,7 +454,7 @@ export default {
               font-size: 10px;
               font-weight: 500;
               line-height: 12px;
-              color: #aaaaaa;
+              color: #bababa;
             }
 
             .filter-value {
@@ -505,7 +547,7 @@ export default {
               top: 50%;
               transform: translateY(-50%);
               right: 0;
-              color: black;
+              color: #222222;
               font-size: 35px;
             }
           }
@@ -604,7 +646,7 @@ export default {
         transition: 0.4s opacity;
         position: absolute;
         top: 23px;
-        left: 277px;
+        left: 260px;
         height: 40px;
         padding: 10px 15px;
         border-radius: 5px;
@@ -635,8 +677,117 @@ export default {
     }
 
     .filter-wrapper {
+      display: flex;
       padding-top: 10px;
-      height: 26px;
+      width: max-content;
+      background: #F6FBFF;
+
+      .year-filter {
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 88px;
+        height: 26px;
+        border-radius: 4px;
+        margin-right: 8px;
+        padding: 0 8px;
+        color: white;
+        font-size: 10px;
+        font-weight: 400;
+        background: #00c2ff;
+
+        .opened {
+          width: 20px;
+        }
+
+        .closed {
+          width: 20px;
+        }
+      }
+      
+      .major-filter {
+        cursor: pointer;
+        border: 1px solid #E9E9E9;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 140px;
+        height: 26px;
+        border-radius: 4px;
+        margin-right: 8px;
+        padding: 0 8px;
+        color: #bababa;
+        font-size: 10px;
+        font-weight: 400;
+        background: white;
+      }
+
+      .university-search {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 280px;
+        height: 26px;
+        color: #bababa;
+        font-size: 10px;
+        font-weight: 400;
+        
+        .search-input {
+          padding-left: 8px;
+          font-family: 'pretendard';
+          color: #bababa;
+          font-size: 10px;
+          font-weight: 400;
+          border-radius: 4px;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          background: white;
+          border: 1px solid #e9e9e9;
+
+          &::placeholder {
+            color: #bababa;
+            font-size: 10px;
+            font-weight: 400;
+          }
+        }
+
+        .icon {
+          position: absolute;
+          right: 8px;
+          z-index: 1;
+          pointer-events: none;
+        }
+      }
+      
+      .dropdown-wrapper {
+        transition: 0.5s height;
+        position: absolute;
+        top: 26px;
+        left: 0;
+        width: 100%;
+        height: 0;
+        overflow-y: scroll;
+        background: white;
+        z-index: 1;
+        border-radius: 0 0 4px 4px;
+        
+        &.is-show {
+          border: 1px solid #F2F2F2;
+          height: 300px;
+        }
+      }
+
+      .icon {
+        font-size: 20px;
+      }
+      
     }
 
     .top-bar-wrapper {
