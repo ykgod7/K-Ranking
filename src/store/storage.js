@@ -23,7 +23,7 @@ export default createStore({
             if (state.inputText) {
                 return [...state.universities[0].filter(uni => uni.name.includes(state.inputText))]
             }
-            console.log(state.universities[0])
+            
             // 학교 리스트 정렬 시
             if (state.sortValue) {
                 let filteredList = [...state.universities[0].filter(function(uni) {
@@ -50,36 +50,6 @@ export default createStore({
                         return u2.rank[idx2].totRank - u1.rank[idx1].totRank
                     })
                 } 
-                // 이름 정렬
-                else if (state.sortValue === 2) {
-                    return filteredList.sort((u1, u2) => {
-                        return new Intl.Collator().compare(u1.name, u2.name);
-                    })
-                }
-                // 경쟁률 정렬
-                else if (state.sortValue === 3) {
-                    return filteredList.sort((u1, u2) => {
-                        return u2.compRate - u1.compRate
-                    })
-                }
-                // 학생수 정렬
-                else if (state.sortValue === 4) {
-                    return filteredList.sort((u1, u2) => {
-                        return u2.totStud - u1.totStud
-                    })
-                }
-                // 학생/교수 정렬
-                else if (state.sortValue === 5) {
-                    return filteredList.sort((u1, u2) => {
-                        return u2.sfratio - u1.sfratio
-                    })
-                }
-                // 등록금 정렬
-                else if (state.sortValue === 6) {
-                    return filteredList.sort((u1, u2) => {
-                        return u2.tuition - u1.tuition
-                    })
-                }
             }
 
             // 그 외

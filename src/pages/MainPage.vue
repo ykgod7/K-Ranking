@@ -123,20 +123,20 @@
       <div class="filter-wrapper" v-click-outside="onClickOutside">
         <div class="year-filter" 
           @click="openFilter(1)">
-          <span>2023</span>
+          <span>{{ selectedYear }}</span>
           <span v-if="filterState === 1" class="material-icons-round icon">expand_less</span>
           <span v-else class="material-icons-round icon">expand_more</span>
           <!-- <img src="@/assets/images/filter_arrow_white.png" :class="filterState === 1 ? 'opened' : 'closed'" alt="" /> -->
           <div class="dropdown-wrapper" :class="filterState === 1 ? 'is-show' : null">
-
+            <div class="option" v-for="year in years" :key="year" @click="chooseYear(year)">{{ year }}</div>
           </div>
         </div>
         <div class="major-filter" @click="openFilter(2)">
-          <span>학과명</span>
+          <span>{{ selectedMajor }}</span>
           <span v-if="filterState === 2" class="material-icons-round icon">expand_less</span>
           <span v-else class="material-icons-round icon">expand_more</span>
           <div class="dropdown-wrapper" :class="filterState === 2 ? 'is-show' : null">
-
+            <div class="option" v-for="(major, idx) in majors" :key="idx" @click="chooseMajor(major)">{{ major }}</div>
           </div>
         </div>
         <div class="university-search" @click="filterState = 0">
@@ -147,20 +147,16 @@
 
       <!-- 대학교 리스트 -->
       <div class="top-bar-wrapper">
-        <div class="inner-wrapper">
-          <div class="filter rank" @click="changeFilterState(1)"><span class="border"
-              :class="$store.state.sortValue === 1 ? 'isActive' : null">순위</span></div>
-          <div class="filter name" @click="changeFilterState(2)"><span class="border name"
-              :class="$store.state.sortValue === 2 ? 'isActive' : null">학교명</span></div>
-          <div class="filter comp" @click="changeFilterState(3)"><span class="border"
-              :class="$store.state.sortValue === 3 ? 'isActive' : null">입학 경쟁률</span></div>
-          <div class="filter num" @click="changeFilterState(4)"><span class="border"
-              :class="$store.state.sortValue === 4 ? 'isActive' : null">총 학생수</span></div>
-          <div class="filter sf-ratio" @click="changeFilterState(5)"><span class="border"
-              :class="$store.state.sortValue === 5 ? 'isActive' : null">학생/교수 비율</span></div>
-          <div class="filter tuition" @click="changeFilterState(6)"><span class="border"
-              :class="$store.state.sortValue === 6 ? 'isActive' : null">평균 등록금</span></div>
+        <div class="rank" @click="changeFilterState(1)">
+          <span>순위</span>
+          <span v-if="$store.state.sortValue === 1" class="material-icons-round icon">north</span>
+          <span v-else class="material-icons-round icon">south</span>
         </div>
+        <div class="uni-name"><span>학교명</span></div>
+        <div class="comp-rate"><span>입학 경쟁률</span></div>
+        <div class="tot-stud"><span>총 학생수</span></div>
+        <div class="sf-ratio"><span>학생/교수 비율</span></div>
+        <div class="tuition"><span>평균 등록금</span></div>
       </div>
     </div>
 
@@ -169,9 +165,10 @@
       <div class="university-wrapper" v-for="(university, idx) in universities" :key="idx"
       @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
-          <div class="rank">{{ university.totRank}}위</div>
+          <div v-if="selectedMajor === '전체'" class="rank">{{ university.totRank}}위</div>
+          <div v-else class="rank">{{ idx + 1 }}위</div>
           <div class="university">
-            <img class="logo" src="//i.namu.wiki/i/jUjHSBpWxH8BBJb9IQslMF6pjVf1IGeWVfe5vT2zZPONBMSNiZ4y2TkNhc17RxG7RliANtIZKA9kA5mjIVdJft77jv1uXOcbrlFYnjgNJYD4y1q4HY8GxFN8gfSAyfUDL1DEaQEVoRcosLIZ2_70pA.svg" /> <!-- 이미지 파일 이름 수정 -->
+            <img class="logo" src="//i.namu.wiki/i/zgePl0CGpZZFjaibAeLz1jzBJXdtrUEC85evn3J-0AEu0c2RoVlJBHrdL9qG5AfuQQDFxBPPbTk-1rGY1kTbAA.svg" /> <!-- 이미지 파일 이름 수정 -->
             <div class="name">
               <p class="name-korean">{{ university.name }}</p>
               <p class="name-english">{{ university.engName }}</p>
@@ -190,7 +187,7 @@
 
 <script>
 import RankChart from '@/components/RankChart.vue'
-import { ref, onBeforeMount, computed, watch, reactive, defineComponent } from 'vue'
+import { ref, onBeforeMount, computed, watch, watchEffect, reactive, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import vClickOutside from 'click-outside-vue3'
@@ -216,9 +213,9 @@ export default {
     const store = useStore()
     const loading = ref(true)
     const majorDropdown = ref(false)
-    const selectedMajor = ref('전체')
     const filterState = ref(0)
-    const majors = ref(['경영학', '우주공학', '물리학', '화학', '생물학', '컴퓨터공학', '반도체', '신기술', '의학'])
+    const searchInput = ref(null)
+    const selectedYear = ref(2023)
 
     const universities = computed(() => {
       return store.getters.filterUniversity
@@ -236,12 +233,41 @@ export default {
       }
     }
 
+    const chooseYear = async (year) => {
+        selectedYear.value = year
+        await axios
+          .get(`https://k-ranking.co.kr:8081/api/universities/year/${year}`)
+          .then((response) => {
+            console.log(response.data.universities[0])
+            store.commit("setUniversities", response.data.universities);
+          })
+    }
+
+    const chooseMajor = (major) => {
+      store.commit("chooseMajor", major);
+    }
+
+    const years = computed(() => {
+      return store.state.years[0];
+    })
+
+    const selectedMajor = computed(() => store.state.selectedMajor)
+
+
+    const majors = computed(() => {
+      return store.state.majors[0]
+    })
+
     watch(openModal, (val) => {
       if (val) {
         document.body.style.overflow = "hidden"
       } else {
         document.body.style.overflow = "auto"
       }
+    })
+
+    watchEffect(() => {
+      store.commit("setInputText", searchInput.value);
     })
 
     onBeforeMount(() => {
@@ -290,11 +316,16 @@ export default {
       selectedMajor,
       tooltipState,
       filterState,
+      searchInput,
+      selectedYear,
+      chooseYear,
+      years,
       detailPage,
       addComma,
       changeFilterState,
       openFilter,
       onClickOutside,
+      chooseMajor,
     }
   },
 }
@@ -646,7 +677,7 @@ export default {
         transition: 0.4s opacity;
         position: absolute;
         top: 23px;
-        left: 260px;
+        left: 280px;
         height: 40px;
         padding: 10px 15px;
         border-radius: 5px;
@@ -679,7 +710,6 @@ export default {
     .filter-wrapper {
       display: flex;
       padding-top: 10px;
-      width: max-content;
       background: #F6FBFF;
 
       .year-filter {
@@ -777,10 +807,29 @@ export default {
         background: white;
         z-index: 1;
         border-radius: 0 0 4px 4px;
+
+        .option {
+          font-family: "pretendard";
+          font-weight: 700;
+          font-size: 10px;
+          line-height: 19px;
+          background: white;
+          padding: 0 10px;
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: 39px;
+          color: #222222;
+          transition: 0.2s;
+
+          &:hover {
+            background-color: #82e1ff;
+          }
+    }
         
         &.is-show {
           border: 1px solid #F2F2F2;
-          height: 300px;
+          height: 250px;
         }
       }
 
@@ -791,96 +840,64 @@ export default {
     }
 
     .top-bar-wrapper {
-      overflow: hidden;
-      display: flex;
-      align-items: flex-end;
-      width: 944px;
-      margin: 0 auto;
-      padding-bottom: 12px;
-      background: #F6FBFF;
       padding-top: 26px;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      background: #F6FBFF;
+      font-weight: bold;
 
-      .inner-wrapper {
-        position: relative;
+      .rank {
+        cursor: pointer;
         display: flex;
-        justify-content: space-between;
-        width: 100%;
+        justify-content: center;
+        height: 12px;
+        width: 80px;
+        color: #222222;
 
-        .filter {
-          position: relative;
-          display: flex;
-          cursor: pointer;
-          font-family: 'pretendard';
-          font-weight: 500;
-          font-size: 14px;
-          color: #222222;
-          line-height: 17px;
-          width: max-content;
-
-          .border {
-            position: relative;
-            width: 100%;
-            padding: 5px 10px;
-            border: 1px solid #F2F2F2;
-            border-radius: 4px;
-
-            &.isActive {
-              border: 1px solid #00C2FF;
-
-              &::before {
-                position: absolute;
-                content: url('@/assets/images/Component11.png');
-                top: 7px;
-                right: 10px;
-                width: 10px;
-                height: 11px;
-              }
-            }
-
-            &::before {
-              position: absolute;
-              content: url('@/assets/images/Component10.png');
-              top: 7px;
-              right: 10px;
-              width: 10px;
-              height: 11px;
-
-            }
-
-            &.name {
-              width: 80px;
-            }
-          }
-
-
-          &.rank {
-            width: 80px;
-          }
-
-          &.name {
-            width: 280px;
-          }
-
-          &.comp {
-            width: 120px;
-          }
-
-          &.num {
-            width: 120px;
-          }
-
-          &.sf-ratio {
-            width: 120px;
-          }
-
-          &.tuition {
-            width: 120px;
-          }
-
-
-
-
+        .icon {
+          font-size: 10px;
         }
+      }
+
+      .uni-name {
+        height: 12px;
+        width: 280px;
+        font-weight: bold;
+        color: #bababa;
+      }
+
+      .comp-rate {
+        height: 12px;
+        width: 120px;
+        font-weight: bold;
+        color: #bababa;
+        text-align: center;
+      }
+
+      .tot-stud {
+        height: 12px;
+        width: 120px;
+        font-weight: bold;
+        color: #bababa;
+        text-align: center;
+      }
+
+      .sf-ratio {
+        height: 12px;
+        width: 120px;
+        font-weight: bold;
+        color: #bababa;
+        text-align: center;
+      }
+
+      .tuition {
+        height: 12px;
+        width: 120px;
+        font-weight: bold;
+        color: #bababa;
+        text-align: center;
       }
     }
   }
