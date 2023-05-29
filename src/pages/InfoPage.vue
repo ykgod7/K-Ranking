@@ -1,13 +1,13 @@
 <template>
-  <div v-if="loading"> Loading... </div>
-
-  <body v-else>
+  <body>
     <div class="university-title">
+      {{ detailInfo }}
       <div class="university-logo">
         <img :src="require(`../assets/logo/${universityData.name}.png`)" />
       </div>
       <div class="university-name">
         <p>{{ universityData.name }}</p>
+        <p>{{ detailInfo }} ss</p>
         <p>{{ universityData.engName }}</p>
       </div>
     </div>
@@ -40,11 +40,6 @@
         </div>
       </div>
     </div>
-
-
-
-
-
     <div>
 
 
@@ -133,8 +128,9 @@
 
 <script>
 import { useRoute } from 'vue-router'
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, computed } from 'vue'
 import RankChart from '../components/RankChart.vue'
+import { useStore } from 'vuex'
 
 
 export default {
@@ -142,14 +138,10 @@ export default {
   components: {
     RankChart,
   },
-  props: ['data'],
-
-  setup(props) {
+  setup() {
     const route = useRoute()
-    const universityData = ref(null)
-    const loading = ref(true)
-    const graph_source = ref('THE')
-    const subject_source = ref('THE')
+    const store = useStore()
+    
     const data = {
       "universities": [
         {
@@ -6043,32 +6035,22 @@ export default {
       ]
     }
 
-    onBeforeMount(async () => {
-      try {
-        universityData.value = JSON.parse(props.data)
-      } catch (err) {
-        // await getData()  // 새로고침 누르면 다시 request 보냄
-        universityData.value = data.universities.filter(university => {
-          return university.id.toString().includes(route.params.id)
-        })[0]
-      }
-      loading.value = false
+    const detailInfo = computed(() => {
+      return store.state.detailInfo[0]
     })
-
-
-    // const getData = async () => {  // 클릭한 학교의 데이터만 가져오기
-    //   const res = await axios.get()
-    //   universityData.value = res.data.universities.filter(university => {
-    //     return university.name.includes(route.params.name)
-    //   })[0]
-    // }
-
+    // onBeforeMount(async () => {
+    //   try {
+    //     universityData.value = JSON.parse(props.data)
+    //   } catch (err) {
+    //     universityData.value = data.universities.filter(university => {
+    //       return university.id.toString().includes(route.params.id)
+    //     })[0]
+    //   }
+    //   loading.value = false
+    // })
 
     return {
-      loading,
-      universityData,
-      graph_source,
-      subject_source
+      detailInfo
     }
   },
 }

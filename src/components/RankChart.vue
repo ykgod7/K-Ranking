@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue';
 import { LineChart } from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
-import { ref} from '@vue/reactivity'
+import { ref } from 'vue'
 
 Chart.register(...registerables);
 
@@ -16,10 +16,8 @@ export default defineComponent({
   name: 'RankChart',
   components: { LineChart },
   props: ['graph_source', 'universityData'],
-  setup(props) {   
-    const years = ref([])
-    const qs_rank = ref([])
-    const the_rank = ref([])
+  setup() {   
+
 
     const testData = {
       labels: [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035],
@@ -46,6 +44,9 @@ export default defineComponent({
     const options = {
       responsive: true,
       maintainAspectRatio: true,
+      layout: {
+        // padding: 20
+      },
       plugins: {
         legend: {
           position: 'top',
@@ -61,8 +62,10 @@ export default defineComponent({
           reverse: true,
           type: 'linear',
           position: 'left',
+          grace: '5%',
+          
           ticks: {
-            stepSize: 1,
+            stepSize: 3,
           },
           grid: {
             drawOnChartArea: false
@@ -71,6 +74,8 @@ export default defineComponent({
         global: {
           beginAtZero: true,
           type: 'linear',
+          grace: '5%',
+          min: 1,
           position: 'right',
         }
       }

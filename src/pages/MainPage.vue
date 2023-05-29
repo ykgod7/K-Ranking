@@ -10,21 +10,18 @@
           </div>
           <div class="university-name">
             <div class="top-wrapper">
-              <div class="korean">서울대학교</div>
+              <div class="korean">{{ detailInfo.name }}</div>
               <span class="material-icons-outlined icon">map</span>
             </div>
             <div class="english">
-              Seoul National University
+              {{ detailInfo.engName }}
             </div>
           </div>
           <span class="material-icons-round close-icon" @click="openModal = false">close</span>
         </div>
         <div class="second-row">
           <div class="uni-description">
-            KAIST는 과학기술을 통한 경제발전이라는 정부의 목표 아래 국내 최초의 연구중심 KAIST는 과학기술을 통한 경제발전이라는 정부의 목표 아래 국내 최초의 연구중심KAIST는 과학기술을 통한
-            경제발전이라는 정부의 목표 아래 국내 최초의 연구중심 KAIST는 과학기술을 통한 경제발전이라는 정부의 목표 아래 국내 최초의 연구중심KAIST는 과학기술을 통한 부의 목표 아래 국내 최초의
-            연구중심KAIST는 과학기술을 통한 부의 목표 아래 국내 최초의 연구중심KAIST는 과학기술을 통한 부의 목표 아래 국내 최초의 연구중심KAIST는 과학기술을 통한 부의 목표 아래 국내 최초의
-            연구중심KAIST는 과학기술을 통한
+            {{ detailInfo.intro }}
           </div>
           <input type="checkbox" class="read-more" />
         </div>
@@ -33,20 +30,20 @@
           <div class="line">
             <div class="box">
               <p class="filter-name"><span>총 학생수</span></p>
-              <p class="filter-value">6,011명</p>
+              <p class="filter-value">{{ addComma(detailInfo.totStud) }}명</p>
             </div>
 
             <div class="box">
               <p class="filter-name"><span>외국인 학생수</span></p>
-              <p class="filter-value">6,011명</p>
+              <p class="filter-value">{{ addComma(detailInfo.totStud) }}명</p>
             </div>
             <div class="box">
               <p class="filter-name"><span>신입생 경쟁률</span></p>
-              <p class="filter-value">1:3</p>
+              <p class="filter-value">1:{{ detailInfo.compRate }}</p>
             </div>
             <div class="box">
               <p class="filter-name"><span>학생/교수 비율</span></p>
-              <p class="filter-value">1:5</p>
+              <p class="filter-value">1:{{ detailInfo.sfRatio }}</p>
             </div>
             <div class="box">
               <p class="filter-name"><span>취업률</span></p>
@@ -56,11 +53,11 @@
           <div class="line">
             <div class="box">
               <p class="filter-name"><span>평균 등록금</span></p>
-              <p class="filter-value">6,011,785원</p>
+              <p class="filter-value">{{ addComma(detailInfo.tuition) }} 원</p>
             </div>
             <div class="box">
               <p class="filter-name"><span>기숙사 수용률</span></p>
-              <p class="filter-value">6,011명</p>
+              <p class="filter-value">80%</p>
             </div>
             <div class="box">
               <p class="filter-name"><span>학생 1인당<br>연간 장학금</span></p>
@@ -166,7 +163,7 @@
       @click="detailPage(university.uni_id)">
         <div class="inner-wrapper">
           <div v-if="selectedMajor === '전체'" class="rank">{{ university.totRank}}위</div>
-          <div v-else class="rank">{{ idx + 1 }}위</div>
+          <div v-else class="rank">{{ $store.state.sortValue === 1 ? universities.length - idx : idx + 1 }}위</div>
           <div class="university">
             <img class="logo" src="//i.namu.wiki/i/zgePl0CGpZZFjaibAeLz1jzBJXdtrUEC85evn3J-0AEu0c2RoVlJBHrdL9qG5AfuQQDFxBPPbTk-1rGY1kTbAA.svg" /> <!-- 이미지 파일 이름 수정 -->
             <div class="name">
@@ -277,19 +274,15 @@ export default {
     const detailPage = (id) => {
       const res = axios.get(`https://k-ranking.co.kr:8081/api/universities/${id}`)
       .then(response => {
-        console.log(response)
-
+        store.commit('setDetailInfo', response.data)
+        console.log(response.data)
       })
       openModal.value = true
-      // router.push({
-      //   name: 'Info',
-      //   params: {
-      //     id: data.uni_id,
-      //     name: data.name,
-      //     data: JSON.stringify(data)
-      //   }
-      // })
     }
+
+    const detailInfo = computed(() => {
+      return store.state.detailInfo[0]
+    })
 
     const openFilter = (val) => {
       if (filterState.value === val) {
@@ -318,8 +311,9 @@ export default {
       filterState,
       searchInput,
       selectedYear,
-      chooseYear,
       years,
+      detailInfo,
+      chooseYear,
       detailPage,
       addComma,
       changeFilterState,

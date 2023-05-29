@@ -3,6 +3,7 @@ import { createStore } from "vuex";
 export default createStore({
     state : {
         universities : [],
+        detailInfo: [],
         searchedUniversity : [],
         majors : [],
         years : [],
@@ -81,10 +82,16 @@ export default createStore({
             if (state.universities) {
                 state.universities[0] = value
             } else {
-                state.universities.push(value);
+                state.universities.push(value)
             }
         },
-
+        setDetailInfo(state, value) {
+            if (state.detailInfo) {
+                state.detailInfo[0] = value
+            } else {
+                state.detailInfo.push(value)
+            }
+        },
         setMajors(state, value) {
             state.majors.push(value)
         },
