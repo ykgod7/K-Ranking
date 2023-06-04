@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="first-row">
           <div class="logo">
-            <img class="logo" :src="require(`../assets/logo/서울대학교.png`)" />
+            <img class="logo" :src="require(`../assets/logo/${detailInfo.name}.svg`)" />
           </div>
           <div class="university-name">
             <div class="top-wrapper">
@@ -165,7 +165,7 @@
           <div v-if="selectedMajor === '전체'" class="rank">{{ university.totRank}}위</div>
           <div v-else class="rank">{{ $store.state.sortValue === 1 ? universities.length - idx : idx + 1 }}위</div>
           <div class="university">
-            <img class="logo" src="//i.namu.wiki/i/zgePl0CGpZZFjaibAeLz1jzBJXdtrUEC85evn3J-0AEu0c2RoVlJBHrdL9qG5AfuQQDFxBPPbTk-1rGY1kTbAA.svg" /> <!-- 이미지 파일 이름 수정 -->
+            <img class="logo" :src="university.name ? require(`../assets/logo/${university.name}.svg`) : null" />
             <div class="name">
               <p class="name-korean">{{ university.name }}</p>
               <p class="name-english">{{ university.engName }}</p>
@@ -184,7 +184,7 @@
 
 <script>
 import RankChart from '@/components/RankChart.vue'
-import { ref, onBeforeMount, computed, watch, watchEffect, reactive, defineComponent } from 'vue'
+import { ref, onBeforeMount, computed, watch, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import vClickOutside from 'click-outside-vue3'
@@ -213,7 +213,11 @@ export default {
     const filterState = ref(0)
     const searchInput = ref(null)
     const selectedYear = ref(2023)
-
+    
+    onBeforeMount(() => {
+      loading.value = false
+    })
+    
     const universities = computed(() => {
       return store.getters.filterUniversity
     })
@@ -267,12 +271,9 @@ export default {
       store.commit("setInputText", searchInput.value);
     })
 
-    onBeforeMount(() => {
-      loading.value = false
-    })
 
-    const detailPage = (id) => {
-      const res = axios.get(`https://k-ranking.co.kr:8081/api/universities/${id}`)
+    const detailPage = async (id) => {
+      await axios.get(`https://k-ranking.co.kr:8081/api/universities/${id}`)
       .then(response => {
         store.commit('setDetailInfo', response.data)
         console.log(response.data)
