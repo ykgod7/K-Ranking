@@ -50,6 +50,14 @@ export default defineComponent({
         let newWidth = (years.value.length - 10) * 50
         containerBody.value.style.width = `calc(100% + ${newWidth}px)`
       }
+
+      // x축 앞뒤 간격 여백
+      // years.value.unshift('')
+      // years.value.push('')
+      // globalRank.value.unshift(null)
+      // globalRank.value.push(null)
+      // nationalRank.value.unshift(null)
+      // nationalRank.value.push(null)
     })
 
 
@@ -139,6 +147,9 @@ export default defineComponent({
         }
       },
       scales: {
+        x: {
+          // offset: false,
+        },
         domestic: {
           reverse: true,
           type: 'linear',
